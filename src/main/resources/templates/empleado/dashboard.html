@@ -1,9 +1,44 @@
 <!DOCTYPE html>
-<html>
-<head><title>Panel Empleado</title></head>
-<body>
-<h1>Bienvenido Empleado</h1>
-<p>Aquí podrás recibir paquetes y generar tickets.</p>
-<a href="/logout">Cerrar Sesión</a>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Empleado</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f9;">
+<div style="max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+    <h1 style="color: #333;">Panel de Empleado - Agencia</h1>
+    <p style="color: #666;">Bienvenido al sistema de encomiendas. Seleccione una opción:</p>
+
+    <div style="display: flex; gap: 20px; margin-top: 30px;">
+
+        <!-- Camino 1: Buscar Pre-registro Web -->
+        <div style="flex: 1; border: 2px solid #007bff; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #007bff;">Buscar Pre-registro</h3>
+            <p>Para clientes que ya registraron su envío por la web.</p>
+            <a href="/recepcion/buscar" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+                Ir a Buscar
+            </a>
+        </div>
+
+        <!-- Camino 2: Registro Directo en Agencia -->
+        <div style="flex: 1; border: 2px solid #28a745; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #28a745;">Registro Directo</h3>
+            <p>Para clientes que llegan directamente a la agencia.</p>
+            <a href="/recepcion/registro-directo" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+                Ir a Registrar
+            </a>
+        </div>
+
+    </div>
+
+    <br><br>
+    <hr>
+    <form action="/logout" method="post" style="text-align: right;">
+        <button type="submit" style="padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Cerrar Sesión
+        </button>
+    </form>
+</div>
 </body>
 </html>
