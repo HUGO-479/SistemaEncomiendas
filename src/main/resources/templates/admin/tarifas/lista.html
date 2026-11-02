@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Administración de tarifas</title>
+</head>
+<body>
+
+<h1>Gestión de tarifas</h1>
+
+<nav>
+    <a th:href="@{/admin/dashboard}">Panel administrador</a>
+    <a th:href="@{/admin/tarifas/nueva}">Nueva tarifa</a>
+</nav>
+
+<p th:if="${exito}" th:text="${exito}"></p>
+<p th:if="${error}" th:text="${error}"></p>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Origen</th>
+        <th>Destino</th>
+        <th>Precio base (S/)</th>
+        <th>Precio por kg (S/)</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(tarifas)}">
+        <td colspan="7">No existen tarifas registradas.</td>
+    </tr>
+
+    <tr th:each="tarifa : ${tarifas}">
+        <td th:text="${tarifa.id}"></td>
+        <td th:text="${tarifa.agenciaOrigen.nombre}"></td>
+        <td th:text="${tarifa.agenciaDestino.nombre}"></td>
+        <td th:text="${tarifa.precioBase}"></td>
+        <td th:text="${tarifa.precioPorKg}"></td>
+        <td th:text="${tarifa.activa} ? 'Activa' : 'Inactiva'"></td>
+
+        <td>
+            <a th:href="@{/admin/tarifas/{id}/editar(id=${tarifa.id})}">
+                Editar
+            </a>
+
+            <form th:action="@{/admin/tarifas/{id}/estado(id=${tarifa.id})}"
+                  method="post" style="display:inline">
+                <button type="submit"
+                        th:text="${tarifa.activa} ? 'Desactivar' : 'Activar'">
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

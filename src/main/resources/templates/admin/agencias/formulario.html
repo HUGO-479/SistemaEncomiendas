@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Formulario de Agencia</title>
+</head>
+<body>
+
+<h1 th:text="${agencia.id == null}
+    ? 'Registrar nueva agencia'
+    : 'Editar agencia'">
+</h1>
+
+<a th:href="@{/admin/agencias}">Volver al listado</a>
+
+<hr>
+
+<form th:action="@{/admin/agencias/guardar}"
+      th:object="${agencia}"
+      method="post">
+
+    <input type="hidden" th:field="*{id}">
+
+    <div>
+        <label for="nombre">Nombre:</label>
+        <input id="nombre"
+               type="text"
+               th:field="*{nombre}"
+               maxlength="100"
+               required>
+    </div>
+
+    <div>
+        <label for="departamento">Departamento:</label>
+        <input id="departamento"
+               type="text"
+               th:field="*{departamento}"
+               maxlength="60"
+               required>
+    </div>
+
+    <div>
+        <label for="ciudad">Ciudad:</label>
+        <input id="ciudad"
+               type="text"
+               th:field="*{ciudad}"
+               maxlength="60"
+               required>
+    </div>
+
+    <div>
+        <label for="direccion">Dirección:</label>
+        <input id="direccion"
+               type="text"
+               th:field="*{direccion}">
+    </div>
+
+    <div>
+        <label for="telefono">Teléfono:</label>
+        <input id="telefono"
+               type="tel"
+               th:field="*{telefono}">
+    </div>
+
+    <hr>
+
+    <button type="submit"
+            th:text="${agencia.id == null}
+            ? 'Registrar agencia'
+            : 'Guardar cambios'">
+    </button>
+
+    <a th:href="@{/admin/agencias}">Cancelar</a>
+
+</form>
+
+</body>
+</html>
