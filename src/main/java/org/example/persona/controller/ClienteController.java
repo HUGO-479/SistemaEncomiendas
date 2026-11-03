@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin/clientes")
+@RequestMapping("/cliente")
 public class ClienteController {
 
     private final PersonaService personaService;
@@ -16,9 +16,16 @@ public class ClienteController {
         this.personaService = personaService;
     }
 
+    // Ruta para el panel del cliente
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "cliente/dashboard"; // Busca el HTML en templates/cliente/dashboard.html
+    }
+
+    // Ruta que ya tenías para listar clientes
     @GetMapping
     public String listar(Model model) {
-        // model.addAttribute("clientes", clienteService.listarTodos()); // (Falta el método en el service)
+        // model.addAttribute("clientes", clienteService.listarTodos());
         return "cliente/lista";
     }
 }

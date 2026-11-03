@@ -1,5 +1,7 @@
 package org.example.envio.service;
 
+import org.example.agencia.model.Agencia;
+import org.example.agencia.repository.AgenciaRepository;
 import org.example.envio.dto.PreRegistroDTO;
 import org.example.envio.model.Admision;
 import org.example.envio.model.DecisionAdmision;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,57 +25,74 @@ public class EnvioService {
 
     private final EnvioRepository envioRepository;
     private final PersonaRepository personaRepository;
+    private final AgenciaRepository agenciaRepository;
 
-    public EnvioService(EnvioRepository envioRepository, PersonaRepository personaRepository) {
+    public EnvioService(EnvioRepository envioRepository, PersonaRepository personaRepository, AgenciaRepository agenciaRepository) {
         this.envioRepository = envioRepository;
         this.personaRepository = personaRepository;
+        this.agenciaRepository = agenciaRepository;
     }
 
     @Transactional
     public Envio registrarPreRegistro(PreRegistroDTO dto, Usuario clienteLogueado) {
 
-        // 1. Buscar o crear Remitente
-        Persona remitente = personaRepository.findByTipoDocumentoAndNumeroDocumento(TipoDocumento.DNI, dto.getRemitenteDni())
+        // 1. Buscar o crear Remitente (ACTUALIZADO)
+        Persona remitente = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni())
                 .orElseGet(() -> {
                     Persona p = new Persona();
-                    p.setTipoDocumento(TipoDocumento.DNI);
+                    p.setTipoDocumento(dto.getRemitenteTipoDocumento());
                     p.setNumeroDocumento(dto.getRemitenteDni());
                     p.setNombres(dto.getRemitenteNombres());
                     p.setApellidos(dto.getRemitenteApellidos());
+                    p.setRazonSocial(dto.getRemitenteRazonSocial()); // <-- Agregado
                     p.setTelefono(dto.getRemitenteCelular());
+                    p.setEmail(dto.getRemitenteEmail()); // <-- Agregado
+                    p.setDireccion(dto.getRemitenteDireccion()); // <-- Agregado
                     return personaRepository.save(p);
                 });
 
-        // 2. Buscar o crear Destinatario
-        Persona destinatario = personaRepository.findByTipoDocumentoAndNumeroDocumento(TipoDocumento.DNI, dto.getDestinatarioDni())
+        // 2. Buscar o crear Destinatario (ACTUALIZADO)
+        Persona destinatario = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni())
                 .orElseGet(() -> {
                     Persona p = new Persona();
-                    p.setTipoDocumento(TipoDocumento.DNI);
+                    p.setTipoDocumento(dto.getDestinatarioTipoDocumento());
                     p.setNumeroDocumento(dto.getDestinatarioDni());
                     p.setNombres(dto.getDestinatarioNombres());
                     p.setApellidos(dto.getDestinatarioApellidos());
+                    p.setRazonSocial(dto.getDestinatarioRazonSocial()); // <-- Agregado
                     p.setTelefono(dto.getDestinatarioCelular());
+                    p.setEmail(dto.getDestinatarioEmail()); // <-- Agregado
+                    p.setDireccion(dto.getDestinatarioDireccion()); // <-- Agregado
                     return personaRepository.save(p);
                 });
 
-        // 3. Crear la Admision
+        // 3. Obtener Agencias
+        List<Agencia> agencias = agenciaRepository.findAll();
+        if (agencias.isEmpty()) {
+            throw new RuntimeException("No hay agencias registradas en el sistema. Crea una primero.");
+        }
+        Agencia agenciaOrigen = agencias.get(0);
+        Agencia agenciaDestino = agencias.size() > 1 ? agencias.get(1) : agencias.get(0);
+
+        // 4. Crear la Admisión
         Admision admision = new Admision();
         admision.setRemitente(remitente);
         admision.setContenidoDeclarado(dto.getDescripcionBulto());
         admision.setPesoKg(BigDecimal.valueOf(dto.getPesoEstimado()));
-        // Dimensiones por defecto para el pre-registro (se corrigen en agencia)
         admision.setLargoCm(BigDecimal.ONE);
         admision.setAnchoCm(BigDecimal.ONE);
         admision.setAltoCm(BigDecimal.ONE);
         admision.setDecision(DecisionAdmision.PENDIENTE);
         admision.setFecha(LocalDateTime.now());
 
-        // 4. Crear el Envio
+        // 5. Crear el Envío
         Envio envio = new Envio();
         envio.setNumeroGuia("ENC-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase());
         envio.setAdmision(admision);
         envio.setRemitente(remitente);
         envio.setDestinatario(destinatario);
+        envio.setAgenciaOrigen(agenciaOrigen);
+        envio.setAgenciaDestino(agenciaDestino);
         envio.setImporteCotizado(BigDecimal.ZERO);
         envio.setEstado(EstadoEnvio.REGISTRADO);
 

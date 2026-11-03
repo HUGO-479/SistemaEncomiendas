@@ -1,18 +1,29 @@
 <!DOCTYPE html>
-<html>
-<head><title>Panel Admin</title></head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Panel Admin</title>
+</head>
 <body>
 <h1>Bienvenido Administrador</h1>
 <p>Aquí podrás gestionar Agencias, Tarifas y ver Reportes.</p>
-<a th:href="@{/admin/agencias}">
-    Gestionar agencias
-</a>
-<a href="/logout">Cerrar Sesión</a>
-<a th:href="@{/admin/tipos-paquete}">
-    Gestionar tipos de paquete
-</a>
-<a th:href="@{/admin/tarifas}">
-    Gestionar tarifas
-</a>
+
+<ul>
+    <li>
+        <a th:href="@{/admin/agencias}">Gestionar agencias</a>
+    </li>
+    <li>
+        <a th:href="@{/admin/tipos-paquete}">Gestionar tipos de paquete</a>
+    </li>
+    <li>
+        <a th:href="@{/admin/tarifas}">Gestionar tarifas</a>
+    </li>
+</ul>
+
+<br>
+
+<!-- El logout debe ser un formulario POST por seguridad de Spring -->
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Cerrar Sesión</button>
+</form>
 </body>
 </html>

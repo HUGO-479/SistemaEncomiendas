@@ -3,6 +3,7 @@ package org.example.envio.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.agencia.model.Agencia; // <-- Importante
 import org.example.persona.model.Persona;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -19,7 +20,8 @@ public class Envio {
     @Column(nullable = false, unique = true, length = 40)
     private String numeroGuia;
 
-    @OneToOne
+    // ✅ Agregado el Cascade para que se guarde la Admision automáticamente
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "admision_id", nullable = false, unique = true)
     private Admision admision;
 
@@ -31,6 +33,16 @@ public class Envio {
     @JoinColumn(name = "destinatario_id", nullable = false)
     private Persona destinatario;
 
+    // ✅ AGREGADO: Relación con Agencia Origen
+    @ManyToOne
+    @JoinColumn(name = "agencia_origen_id", nullable = false)
+    private Agencia agenciaOrigen;
+
+    // ✅ AGREGADO: Relación con Agencia Destino
+    @ManyToOne
+    @JoinColumn(name = "agencia_destino_id", nullable = false)
+    private Agencia agenciaDestino;
+
     @Column(nullable = false)
     private BigDecimal importeCotizado;
 
@@ -41,11 +53,8 @@ public class Envio {
     @Column(name = "registrado_en", updatable = false)
     private LocalDateTime registradoEn;
 
-    // (Faltarían las relaciones a agenciaOrigen y agenciaDestino)
-
     @PrePersist
     protected void onCreate() {
         this.registradoEn = LocalDateTime.now();
     }
-
 }

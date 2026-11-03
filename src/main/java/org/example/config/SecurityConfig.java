@@ -45,8 +45,10 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutUrl("/logout") // La ruta que usa el formulario
+                        .logoutSuccessUrl("/login?logout") // A dónde redirige después de cerrar sesión
+                        .invalidateHttpSession(true) // Borra la sesión
+                        .deleteCookies("JSESSIONID") // Borra la cookie de sesión
                         .permitAll()
                 );
         return http.build();

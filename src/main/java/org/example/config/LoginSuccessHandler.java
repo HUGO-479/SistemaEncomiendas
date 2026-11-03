@@ -25,7 +25,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         } else if (rol.equals("ROLE_EMPLEADO")) {
             targetUrl = "/empleado/dashboard";
         } else if (rol.equals("ROLE_CLIENTE")) {
-            targetUrl = "/cliente/pre-registro";
+            targetUrl = "/cliente/dashboard";
         }
 
         // Redirige a la URL según el rol
