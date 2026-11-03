@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestión de Agencias</title>
+</head>
+<body>
+
+<h1>Gestión de Agencias</h1>
+
+<nav>
+    <a th:href="@{/admin/dashboard}">Panel principal</a>
+    <a th:href="@{/admin/agencias/nueva}">Nueva agencia</a>
+</nav>
+
+<hr>
+
+<p th:if="${exito}" th:text="${exito}"></p>
+<p th:if="${error}" th:text="${error}"></p>
+
+<h2>Agencias registradas</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Departamento</th>
+        <th>Ciudad</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:if="${#lists.isEmpty(agencias)}">
+        <td colspan="8">No hay agencias registradas.</td>
+    </tr>
+
+    <tr th:each="agencia : ${agencias}">
+        <td th:text="${agencia.id}"></td>
+        <td th:text="${agencia.nombre}"></td>
+        <td th:text="${agencia.departamento}"></td>
+        <td th:text="${agencia.ciudad}"></td>
+        <td th:text="${agencia.direccion}"></td>
+        <td th:text="${agencia.telefono}"></td>
+
+        <td th:text="${agencia.activa} ? 'Activa' : 'Inactiva'"></td>
+
+        <td>
+            <a th:href="@{/admin/agencias/{id}/editar(id=${agencia.id})}">
+                Editar
+            </a>
+
+            <form th:action="@{/admin/agencias/{id}/estado(id=${agencia.id})}"
+                  method="post"
+                  style="display:inline">
+
+                <button type="submit"
+                        th:text="${agencia.activa} ? 'Desactivar' : 'Activar'"
+                        onclick="return confirm('¿Confirmar cambio de estado?')">
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tipos de paquete</title>
+</head>
+<body>
+
+<h1>Administración de tipos de paquete</h1>
+
+<nav>
+    <a th:href="@{/admin/dashboard}">Panel administrador</a>
+    <a th:href="@{/admin/tipos-paquete/nuevo}">
+        Nuevo tipo de paquete
+    </a>
+</nav>
+
+<hr>
+
+<p th:if="${exito}" th:text="${exito}"></p>
+<p th:if="${error}" th:text="${error}"></p>
+
+<table border="1" cellpadding="8">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:if="${#lists.isEmpty(tipos)}">
+        <td colspan="5">
+            No existen tipos de paquete registrados.
+        </td>
+    </tr>
+
+    <tr th:each="tipo : ${tipos}">
+
+        <td th:text="${tipo.id}"></td>
+        <td th:text="${tipo.nombre}"></td>
+        <td th:text="${tipo.descripcion}"></td>
+
+        <td th:text="${tipo.activo} ? 'Activo' : 'Inactivo'"></td>
+
+        <td>
+            <a th:href="@{/admin/tipos-paquete/{id}/editar(id=${tipo.id})}">
+                Editar
+            </a>
+
+            <form th:action="@{/admin/tipos-paquete/{id}/estado(id=${tipo.id})}"
+                  method="post"
+                  style="display:inline">
+
+                <button type="submit"
+                        th:text="${tipo.activo} ? 'Desactivar' : 'Activar'"
+                        onclick="return confirm('¿Confirmar cambio de estado?')">
+                </button>
+
+            </form>
+        </td>
+
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
