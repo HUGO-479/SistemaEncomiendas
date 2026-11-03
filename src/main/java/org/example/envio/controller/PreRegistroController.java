@@ -37,25 +37,23 @@ public class PreRegistroController {
         model.addAttribute("agencias", agenciaService.listarTodas());
         model.addAttribute("tiposPaquete", tipoPaqueteRepository.findAll());
         model.addAttribute("preRegistro", new PreRegistroDTO());
-        return "encomienda/pre-registro";
+        return "cliente/pre-registro";
     }
 
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute PreRegistroDTO dto, Authentication auth, RedirectAttributes redirect) {
         try {
-            // 1. Buscamos al usuario logueado
-            Usuario clienteLogueado = usuarioRepository.findByUsername(auth.getName()).orElseThrow();
+            Usuario cliente = usuarioRepository.findByUsername(auth.getName()).orElseThrow();
+            Envio env = envioService.registrarPreRegistro(dto, cliente);
 
-            // 2. Llamamos al servicio. Ahora devuelve un 'Envio', no una 'Encomienda'.
-            Envio env = envioService.registrarPreRegistro(dto, clienteLogueado);
-
-            // 3. Usamos getNumeroGuia() porque así se llama en la nueva BD
             redirect.addFlashAttribute("mensajeExito", "Pre-registro exitoso. Su código es: " + env.getNumeroGuia());
-            return "redirect:/cliente/pre-registro";
 
+            // ✅ Redirigimos al Dashboard (no al formulario)
+            return "redirect:/cliente/dashboard";
         } catch (Exception e) {
             redirect.addFlashAttribute("mensajeError", e.getMessage());
             return "redirect:/cliente/pre-registro";
         }
     }
+
 }

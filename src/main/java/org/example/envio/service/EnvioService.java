@@ -11,6 +11,7 @@ import org.example.envio.repository.EnvioRepository;
 import org.example.persona.model.Persona;
 import org.example.persona.model.TipoDocumento;
 import org.example.persona.repository.PersonaRepository;
+import org.example.shared.ValidadorDocumento; // <-- IMPORT AGREGADO
 import org.example.usuario.model.Usuario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,11 @@ public class EnvioService {
     @Transactional
     public Envio registrarPreRegistro(PreRegistroDTO dto, Usuario clienteLogueado) {
 
-        // 1. Buscar o crear Remitente (ACTUALIZADO)
+        // ✅ VALIDACIONES AGREGADAS AQUÍ
+        ValidadorDocumento.validar(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni());
+        ValidadorDocumento.validar(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni());
+
+        // 1. Buscar o crear Remitente
         Persona remitente = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni())
                 .orElseGet(() -> {
                     Persona p = new Persona();
@@ -44,14 +49,13 @@ public class EnvioService {
                     p.setNumeroDocumento(dto.getRemitenteDni());
                     p.setNombres(dto.getRemitenteNombres());
                     p.setApellidos(dto.getRemitenteApellidos());
-                    p.setRazonSocial(dto.getRemitenteRazonSocial()); // <-- Agregado
+                    p.setRazonSocial(dto.getRemitenteRazonSocial());
                     p.setTelefono(dto.getRemitenteCelular());
-                    p.setEmail(dto.getRemitenteEmail()); // <-- Agregado
-                    p.setDireccion(dto.getRemitenteDireccion()); // <-- Agregado
+                    p.setDireccion(dto.getRemitenteDireccion());
                     return personaRepository.save(p);
                 });
 
-        // 2. Buscar o crear Destinatario (ACTUALIZADO)
+        // 2. Buscar o crear Destinatario
         Persona destinatario = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni())
                 .orElseGet(() -> {
                     Persona p = new Persona();
@@ -59,20 +63,17 @@ public class EnvioService {
                     p.setNumeroDocumento(dto.getDestinatarioDni());
                     p.setNombres(dto.getDestinatarioNombres());
                     p.setApellidos(dto.getDestinatarioApellidos());
-                    p.setRazonSocial(dto.getDestinatarioRazonSocial()); // <-- Agregado
+                    p.setRazonSocial(dto.getDestinatarioRazonSocial());
                     p.setTelefono(dto.getDestinatarioCelular());
-                    p.setEmail(dto.getDestinatarioEmail()); // <-- Agregado
-                    p.setDireccion(dto.getDestinatarioDireccion()); // <-- Agregado
+                    p.setDireccion(dto.getDestinatarioDireccion());
                     return personaRepository.save(p);
                 });
 
         // 3. Obtener Agencias
-        List<Agencia> agencias = agenciaRepository.findAll();
-        if (agencias.isEmpty()) {
-            throw new RuntimeException("No hay agencias registradas en el sistema. Crea una primero.");
-        }
-        Agencia agenciaOrigen = agencias.get(0);
-        Agencia agenciaDestino = agencias.size() > 1 ? agencias.get(1) : agencias.get(0);
+        Agencia agenciaOrigen = agenciaRepository.findById(dto.getAgenciaOrigenId())
+                .orElseThrow(() -> new RuntimeException("Agencia origen no encontrada"));
+        Agencia agenciaDestino = agenciaRepository.findById(dto.getAgenciaDestinoId())
+                .orElseThrow(() -> new RuntimeException("Agencia destino no encontrada"));
 
         // 4. Crear la Admisión
         Admision admision = new Admision();

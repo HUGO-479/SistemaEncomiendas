@@ -12,7 +12,6 @@ public class PreRegistroDTO {
     private String remitenteApellidos;
     private String remitenteRazonSocial;
     private String remitenteCelular;
-    private String remitenteEmail;
     private String remitenteDireccion;
 
     // --- DESTINATARIO ---
@@ -22,7 +21,6 @@ public class PreRegistroDTO {
     private String destinatarioApellidos;
     private String destinatarioRazonSocial;
     private String destinatarioCelular;
-    private String destinatarioEmail;
     private String destinatarioDireccion;
 
     // --- ENVÍO ---
