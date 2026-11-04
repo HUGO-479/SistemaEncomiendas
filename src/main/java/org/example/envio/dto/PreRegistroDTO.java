@@ -31,4 +31,8 @@ public class PreRegistroDTO {
     private String descripcionBulto;
     private Double pesoEstimado;
 
+
+
+
+
 }

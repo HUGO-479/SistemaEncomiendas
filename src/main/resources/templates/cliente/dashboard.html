@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel del Cliente - Encomiendas</title>
+</head>
+<body>
+<h1>Bienvenido a tu Panel de Cliente</h1>
+
+<!-- Muestra el mensaje de éxito si acaba de hacer un pre-registro -->
+<div th:if="${mensajeExito}" style="color: green; font-weight: bold; padding: 10px; background-color: #d4edda; margin-bottom: 20px;">
+    <span th:text="${mensajeExito}"></span>
+</div>
+
+<p>¿Qué deseas hacer hoy?</p>
+
+<!-- Opciones del Cliente -->
+<div style="display: flex; gap: 20px; margin-top: 20px;">
+
+    <!-- Botón 1: Ir al Pre-registro -->
+    <div style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 250px; text-align: center;">
+        <h3>Nuevo Envío</h3>
+        <p>Registra un nuevo paquete para enviar.</p>
+        <a th:href="@{/cliente/pre-registro}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+            Hacer Pre-registro
+        </a>
+    </div>
+
+    <!-- Botón 2: Ir a Mis Envíos -->
+    <div style="border: 1px solid #ccc; padding: 15px; border-radius: 8px; width: 250px; text-align: center;">
+        <h3>Mis Envíos</h3>
+        <p>Revisa el estado de tus paquetes enviados.</p>
+        <a th:href="@{/mis-envios}" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px;">
+            Ver Mis Envíos
+        </a>
+    </div>
+
+</div>
+
+<br><br>
+<hr>
+
+<!-- Botón de Cerrar Sesión -->
+<form th:action="@{/logout}" method="post">
+    <button type="submit" style="padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Cerrar Sesión
+    </button>
+</form>
+
+</body>
+</html>
