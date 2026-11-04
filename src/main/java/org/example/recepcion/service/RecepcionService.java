@@ -36,11 +36,8 @@ public class RecepcionService {
     // ==========================================
     // FLUJO 1: BUSCAR PRE-REGISTRO WEB POR DNI
     // ==========================================
-    public List<Envio> buscarPendientesPorDni(String dni) {
-        Persona persona = personaRepository.findByTipoDocumentoAndNumeroDocumento(TipoDocumento.DNI, dni)
-                .orElseThrow(() -> new RuntimeException("Persona no encontrada con DNI: " + dni));
-
-        return envioRepository.findByRemitenteOrDestinatario(persona, persona)
+    public List<Envio> buscarPendientes(String busqueda) {
+        return envioRepository.buscarPorGuiaODocumento(busqueda)
                 .stream()
                 .filter(e -> e.getEstado() == EstadoEnvio.REGISTRADO)
                 .toList();

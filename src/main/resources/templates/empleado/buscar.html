@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Envío</title>
+</head>
+<body>
+<h1>Recepción en Agencia</h1>
+<p>Ingrese el DNI, RUC, Pasaporte o Código de Envío para buscar.</p>
+
+<!-- Formulario de búsqueda -->
+<form th:action="@{/recepcion/buscar}" method="post">
+    <input type="text" name="busqueda" placeholder="Ej: 12345678 o ENC-90DDCC" required>
+    <button type="submit">Buscar</button>
+</form>
+
+<div th:if="${error}" style="color:red; font-weight:bold;" th:text="${error}"></div>
+
+<!-- Tabla de resultados -->
+<div th:if="${envios != null && !envios.isEmpty()}">
+    <h3>Resultados para: <span th:text="${busqueda}"></span></h3>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Código Guía</th>
+            <th>Remitente</th>
+            <th>Destinatario</th>
+            <th>Peso Estimado</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="e : ${envios}">
+            <td th:text="${e.numeroGuia}"></td>
+            <td th:text="${e.remitente.nombres + ' ' + e.remitente.apellidos}"></td>
+            <td th:text="${e.destinatario.nombres + ' ' + e.destinatario.apellidos}"></td>
+            <td th:text="${e.admision.pesoKg}"></td>
+            <td>
+                <a th:href="@{/recepcion/pesar/{id}(id=${e.id})}">Recibir y Pesar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

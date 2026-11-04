@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Mis Envíos</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Envíos</title>
+</head>
 <body>
 <h1>Mis Envíos</h1>
-<a href="/cliente/pre-registro">Hacer un nuevo Pre-registro</a>
-<table border="1">
+<a th:href="@{/cliente/pre-registro}">Hacer un nuevo Pre-registro</a>
+
+<br><br>
+
+<!-- Mensaje si no hay envíos -->
+<div th:if="${envios == null || envios.isEmpty()}" style="color: red;">
+    Aún no tienes envíos registrados.
+</div>
+
+<!-- Tabla de envíos -->
+<table border="1" th:if="${envios != null && !envios.isEmpty()}">
+    <thead>
     <tr>
-        <th>Código</th>
+        <th>Código Guía</th>
         <th>Destinatario</th>
         <th>Estado</th>
+        <th>Acciones</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="envio : ${envios}">
-        <td th:text="${envio.codigoSeguimiento}"></td>
-        <td th:text="${envio.destinatario.nombres}"></td>
+        <td th:text="${envio.numeroGuia}"></td>
+        <td th:text="${envio.destinatario.nombres + ' ' + envio.destinatario.apellidos}"></td>
         <td th:text="${envio.estado}"></td>
+        <td>
+            <!-- Botón para generar el Ticket (PDF) -->
+            <a th:href="@{/ticket/generar/{id}(id=${envio.id})}" target="_blank">Generar Ticket</a>
+        </td>
     </tr>
+    </tbody>
 </table>
+
 <br>
-<form action="/logout" method="post">
+<form th:action="@{/logout}" method="post">
     <button type="submit">Cerrar Sesión</button>
 </form>
 </body>

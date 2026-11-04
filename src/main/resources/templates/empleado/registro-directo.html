@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro Directo en Agencia</title>
+</head>
+<body>
+<h1>Registro Directo en Agencia</h1>
+<p>Complete los datos del cliente para registrar su envío.</p>
+
+<form th:action="@{/recepcion/registro-directo}" method="post">
+
+    <h3>Datos del Remitente</h3>
+    <label>Tipo Documento:</label>
+    <select name="remitenteTipoDocumento" id="remitenteTipoDocumento" onchange="actualizarCampos('remitente')">
+        <option value="DNI">DNI</option>
+        <option value="RUC">RUC</option>
+        <option value="PASAPORTE">Pasaporte</option>
+    </select><br>
+
+    <label>N° Documento:</label>
+    <input type="text" name="remitenteDni" id="remitenteDni" required><br>
+
+    <div id="remitente_campos_persona">
+        <label>Nombres:</label>
+        <input type="text" name="remitenteNombres"><br>
+        <label>Apellidos:</label>
+        <input type="text" name="remitenteApellidos"><br>
+    </div>
+
+    <div id="remitente_campos_empresa" style="display:none;">
+        <label>Razón Social:</label>
+        <input type="text" name="remitenteRazonSocial"><br>
+    </div>
+
+    <label>Celular:</label>
+    <input type="text" name="remitenteCelular" required><br>
+
+    <h3>Datos del Destinatario</h3>
+    <label>Tipo Documento:</label>
+    <select name="destinatarioTipoDocumento" id="destinatarioTipoDocumento" onchange="actualizarCampos('destinatario')">
+        <option value="DNI">DNI</option>
+        <option value="RUC">RUC</option>
+        <option value="PASAPORTE">Pasaporte</option>
+    </select><br>
+
+    <label>N° Documento:</label>
+    <input type="text" name="destinatarioDni" id="destinatarioDni" required><br>
+
+    <div id="destinatario_campos_persona">
+        <label>Nombres:</label>
+        <input type="text" name="destinatarioNombres"><br>
+        <label>Apellidos:</label>
+        <input type="text" name="destinatarioApellidos"><br>
+    </div>
+
+    <div id="destinatario_campos_empresa" style="display:none;">
+        <label>Razón Social:</label>
+        <input type="text" name="destinatarioRazonSocial"><br>
+    </div>
+
+    <label>Celular:</label>
+    <input type="text" name="destinatarioCelular" required><br>
+
+    <h3>Datos del Envío</h3>
+
+    <label>Agencia Destino:</label>
+    <select name="agenciaDestinoId" required>
+        <option value="">-- Seleccione --</option>
+        <option th:each="a : ${agencias}" th:value="${a.id}" th:text="${a.nombre}"></option>
+    </select><br>
+
+    <label>Tipo de Paquete:</label>
+    <select name="tipoPaqueteId" required>
+        <option value="">-- Seleccione --</option>
+        <option th:each="tp : ${tiposPaquete}" th:value="${tp.id}" th:text="${tp.nombre}"></option>
+    </select><br>
+
+    <label>Descripción del paquete:</label>
+    <input type="text" name="descripcionBulto" required><br>
+
+    <button type="submit">Continuar al Pesaje</button>
+</form>
+
+<script>
+    function actualizarCampos(prefijo) {
+        const select = document.getElementById(prefijo + 'TipoDocumento');
+        const inputDoc = document.getElementById(prefijo + 'Dni');
+        const divPersona = document.getElementById(prefijo + '_campos_persona');
+        const divEmpresa = document.getElementById(prefijo + '_campos_empresa');
+
+        if (!select || !inputDoc) return;
+
+        const tipo = select.value;
+
+        if (tipo === 'DNI') {
+            inputDoc.maxLength = 8;
+            inputDoc.placeholder = "8 dígitos";
+            divPersona.style.display = 'block';
+            divEmpresa.style.display = 'none';
+        } else if (tipo === 'RUC') {
+            inputDoc.maxLength = 11;
+            inputDoc.placeholder = "11 dígitos";
+            divPersona.style.display = 'none';
+            divEmpresa.style.display = 'block';
+        } else if (tipo === 'PASAPORTE') {
+            inputDoc.maxLength = 9;
+            inputDoc.placeholder = "9 caracteres";
+            divPersona.style.display = 'block';
+            divEmpresa.style.display = 'none';
+        }
+        inputDoc.value = '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        actualizarCampos('remitente');
+        actualizarCampos('destinatario');
+    });
+</script>
+</body>
+</html>

@@ -53,6 +53,9 @@ public class Envio {
     @Column(name = "registrado_en", updatable = false)
     private LocalDateTime registradoEn;
 
+    @Column(name = "fecha_entrega")
+    private LocalDateTime fechaEntrega;
+
     @PrePersist
     protected void onCreate() {
         this.registradoEn = LocalDateTime.now();

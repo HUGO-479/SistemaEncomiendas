@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Envío</title>
+</head>
+<body>
+<h1>Consulta el estado de tu paquete</h1>
+<p>Ingresa el código de guía que te entregamos al registrar tu envío.</p>
+
+<!-- Formulario que envía el código por POST -->
+<form th:action="@{/consulta}" method="post">
+    <input type="text" name="codigo" placeholder="Ej: ENC-90DDCC" required>
+    <button type="submit">Buscar</button>
+</form>
+
+<!-- Mensaje de error si el código no existe -->
+<div th:if="${error}" style="color: red; font-weight: bold; margin-top: 20px;">
+    <span th:text="${error}"></span>
+</div>
+
+<!-- Resultado de la consulta (solo si el código existe) -->
+<div th:if="${codigo != null}" style="margin-top: 20px; padding: 20px; border: 2px solid #007bff; border-radius: 8px; max-width: 500px;">
+    <h2>Información del Envío</h2>
+
+    <p><strong>Código de Guía:</strong> <span th:text="${codigo}"></span></p>
+
+    <p><strong>Estado Actual:</strong>
+        <span th:text="${estado}" style="font-weight: bold; color: green;"></span>
+    </p>
+
+    <p><strong>Agencia de Destino:</strong> <span th:text="${destino}"></span></p>
+
+    <p><strong>Fecha de Registro:</strong> <span th:text="${fecha}"></span></p>
+
+    <p style="font-size: 0.9em; color: gray;">
+        * Por seguridad, no mostramos datos personales como DNI o teléfono.
+    </p>
+</div>
+</body>
+</html>
