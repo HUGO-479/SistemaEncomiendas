@@ -34,10 +34,11 @@
 
     <br><br>
     <hr>
-    <form action="/logout" method="post" style="text-align: right;">
+    <form th:action="@{/logout}" method="post">
         <button type="submit" style="padding: 8px 15px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer;">
             Cerrar Sesión
         </button>
+    </form>
     </form>
 </div>
 </body>

@@ -9,11 +9,13 @@ import org.example.envio.model.Envio;
 import org.example.envio.model.EstadoEnvio;
 import org.example.envio.repository.EnvioRepository;
 import org.example.persona.model.Persona;
+import org.example.persona.model.TipoDocumento;
 import org.example.persona.repository.PersonaRepository;
-import org.example.shared.ValidadorDocumento; //
+import org.example.shared.ValidadorDocumento;
 import org.example.usuario.model.Usuario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,7 +27,9 @@ public class EnvioService {
     private final PersonaRepository personaRepository;
     private final AgenciaRepository agenciaRepository;
 
-    public EnvioService(EnvioRepository envioRepository, PersonaRepository personaRepository, AgenciaRepository agenciaRepository) {
+    public EnvioService(EnvioRepository envioRepository,
+                        PersonaRepository personaRepository,
+                        AgenciaRepository agenciaRepository) {
         this.envioRepository = envioRepository;
         this.personaRepository = personaRepository;
         this.agenciaRepository = agenciaRepository;
@@ -34,11 +38,16 @@ public class EnvioService {
     @Transactional
     public Envio registrarPreRegistro(PreRegistroDTO dto, Usuario clienteLogueado) {
 
-        // ✅ VALIDACIONES AGREGADAS AQUÍ
-        ValidadorDocumento.validar(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni());
-        ValidadorDocumento.validar(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni());
+        // 1. Validar Documentos
+        String nombreRemitente = dto.getRemitenteTipoDocumento() == TipoDocumento.RUC
+                ? dto.getRemitenteRazonSocial() : dto.getRemitenteNombres();
+        ValidadorDocumento.validar(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni(), nombreRemitente);
 
-        // 1. Buscar o crear Remitente
+        String nombreDestinatario = dto.getDestinatarioTipoDocumento() == TipoDocumento.RUC
+                ? dto.getDestinatarioRazonSocial() : dto.getDestinatarioNombres();
+        ValidadorDocumento.validar(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni(), nombreDestinatario);
+
+        // 2. Buscar o crear Remitente
         Persona remitente = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni())
                 .orElseGet(() -> {
                     Persona p = new Persona();
@@ -52,7 +61,7 @@ public class EnvioService {
                     return personaRepository.save(p);
                 });
 
-        // 2. Buscar o crear Destinatario
+        // 3. Buscar o crear Destinatario
         Persona destinatario = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni())
                 .orElseGet(() -> {
                     Persona p = new Persona();
@@ -66,24 +75,26 @@ public class EnvioService {
                     return personaRepository.save(p);
                 });
 
-        // 3. Obtener Agencias
+        // 4. Obtener Agencias
         Agencia agenciaOrigen = agenciaRepository.findById(dto.getAgenciaOrigenId())
                 .orElseThrow(() -> new RuntimeException("Agencia origen no encontrada"));
         Agencia agenciaDestino = agenciaRepository.findById(dto.getAgenciaDestinoId())
                 .orElseThrow(() -> new RuntimeException("Agencia destino no encontrada"));
 
-        // 4. Crear la Admisión
+        // 5. Crear la Admisión (Medidas estimadas por defecto)
         Admision admision = new Admision();
         admision.setRemitente(remitente);
         admision.setContenidoDeclarado(dto.getDescripcionBulto());
         admision.setPesoKg(BigDecimal.valueOf(dto.getPesoEstimado()));
-        admision.setLargoCm(dto.getLargoCm());
-        admision.setAnchoCm(dto.getAnchoCm());
-        admision.setAltoCm(dto.getAltoCm());
+
+        admision.setLargoCm(BigDecimal.ONE);
+        admision.setAnchoCm(BigDecimal.ONE);
+        admision.setAltoCm(BigDecimal.ONE);
+
         admision.setDecision(DecisionAdmision.PENDIENTE);
         admision.setFecha(LocalDateTime.now());
 
-        // 5. Crear el Envío
+        // 6. Crear el Envío
         Envio envio = new Envio();
         envio.setNumeroGuia("ENC-" + UUID.randomUUID().toString().substring(0, 6).toUpperCase());
         envio.setAdmision(admision);

@@ -26,7 +26,11 @@ public class PersonaService {
     @Transactional
     public Persona registrarCliente(ClienteRegistroDTO dto) {
         // Validamos el formato
-        ValidadorDocumento.validar(dto.getTipoDocumento(), dto.getNumeroDocumento());
+        String nombreORazonSocial = dto.getTipoDocumento() == TipoDocumento.RUC
+                ? dto.getRazonSocial()
+                : dto.getNombres();
+
+        ValidadorDocumento.validar(dto.getTipoDocumento(), dto.getNumeroDocumento(), nombreORazonSocial);
 
         // Verificamos si ya existe
         Optional<Persona> existente = buscarPorDocumento(dto.getTipoDocumento(), dto.getNumeroDocumento());

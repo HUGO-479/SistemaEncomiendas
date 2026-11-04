@@ -21,14 +21,19 @@
     <label>N° Documento:</label>
     <input type="text" th:field="*{remitenteDni}" id="remitenteDni" required maxlength="8"><br>
 
-    <label>Nombres:</label>
-    <input type="text" th:field="*{remitenteNombres}"><br>
+    <!-- Campos para Persona Natural -->
+    <div id="remitente_campos_persona">
+        <label>Nombres:</label>
+        <input type="text" th:field="*{remitenteNombres}"><br>
+        <label>Apellidos:</label>
+        <input type="text" th:field="*{remitenteApellidos}"><br>
+    </div>
 
-    <label>Apellidos:</label>
-    <input type="text" th:field="*{remitenteApellidos}"><br>
-
-    <label>Razón Social (si es RUC):</label>
-    <input type="text" th:field="*{remitenteRazonSocial}"><br>
+    <!-- Campos para Empresa -->
+    <div id="remitente_campos_empresa" style="display:none;">
+        <label>Razón Social:</label>
+        <input type="text" th:field="*{remitenteRazonSocial}"><br>
+    </div>
 
     <label>Celular:</label>
     <input type="text" th:field="*{remitenteCelular}" required><br>
@@ -45,14 +50,19 @@
     <label>N° Documento:</label>
     <input type="text" th:field="*{destinatarioDni}" id="destinatarioDni" required maxlength="8"><br>
 
-    <label>Nombres:</label>
-    <input type="text" th:field="*{destinatarioNombres}"><br>
+    <!-- Campos para Persona Natural -->
+    <div id="destinatario_campos_persona">
+        <label>Nombres:</label>
+        <input type="text" th:field="*{destinatarioNombres}"><br>
+        <label>Apellidos:</label>
+        <input type="text" th:field="*{destinatarioApellidos}"><br>
+    </div>
 
-    <label>Apellidos:</label>
-    <input type="text" th:field="*{destinatarioApellidos}"><br>
-
-    <label>Razón Social (si es RUC):</label>
-    <input type="text" th:field="*{destinatarioRazonSocial}"><br>
+    <!-- Campos para Empresa -->
+    <div id="destinatario_campos_empresa" style="display:none;">
+        <label>Razón Social:</label>
+        <input type="text" th:field="*{destinatarioRazonSocial}"><br>
+    </div>
 
     <label>Celular:</label>
     <input type="text" th:field="*{destinatarioCelular}" required><br>
@@ -92,21 +102,44 @@
 <div th:if="${mensajeError}" style="color: red; font-weight: bold;"><span th:text="${mensajeError}"></span></div>
 
 <script>
-    function actualizarLimiteDocumento(selectId, inputId) {
+    function configurarDocumento(selectId, inputId, divPersonaId, divEmpresaId) {
         const select = document.getElementById(selectId);
         const input = document.getElementById(inputId);
-        select.addEventListener('change', function() {
+        const divPersona = document.getElementById(divPersonaId);
+        const divEmpresa = document.getElementById(divEmpresaId);
+
+        function actualizar() {
             const tipo = select.value;
-            if (tipo === 'DNI') { input.maxLength = 8; input.placeholder = "8 dígitos"; }
-            else if (tipo === 'RUC') { input.maxLength = 11; input.placeholder = "11 dígitos"; }
-            else if (tipo === 'PASAPORTE') { input.maxLength = 9; input.placeholder = "9 caracteres"; }
-            input.value = '';
-        });
-        select.dispatchEvent(new Event('change'));
+
+            if (tipo === 'DNI') {
+                input.maxLength = 8;
+                input.placeholder = "8 dígitos";
+                divPersona.style.display = 'block';
+                divEmpresa.style.display = 'none';
+            } else if (tipo === 'RUC') {
+                input.maxLength = 11;
+                input.placeholder = "11 dígitos";
+                divPersona.style.display = 'none';
+                divEmpresa.style.display = 'block';
+            } else if (tipo === 'PASAPORTE') {
+                input.maxLength = 9;
+                input.placeholder = "9 caracteres";
+                divPersona.style.display = 'block';
+                divEmpresa.style.display = 'none';
+            }
+            input.value = ''; // Limpiar al cambiar
+        }
+
+        select.addEventListener('change', actualizar);
+        actualizar(); // Ejecutar al cargar
     }
+
     document.addEventListener("DOMContentLoaded", function() {
-        actualizarLimiteDocumento('remitenteTipoDocumento', 'remitenteDni');
-        actualizarLimiteDocumento('destinatarioTipoDocumento', 'destinatarioDni');
+        // Configurar Remitente
+        configurarDocumento('remitenteTipoDocumento', 'remitenteDni', 'remitente_campos_persona', 'remitente_campos_empresa');
+
+        // Configurar Destinatario
+        configurarDocumento('destinatarioTipoDocumento', 'destinatarioDni', 'destinatario_campos_persona', 'destinatario_campos_empresa');
     });
 </script>
 </body>
