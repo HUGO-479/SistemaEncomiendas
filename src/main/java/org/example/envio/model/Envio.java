@@ -20,7 +20,7 @@ public class Envio {
     @Column(nullable = false, unique = true, length = 40)
     private String numeroGuia;
 
-    // ✅ Agregado el Cascade para que se guarde la Admision automáticamente
+    //  Agregado el Cascade para que se guarde la Admision automáticamente
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "admision_id", nullable = false, unique = true)
     private Admision admision;
@@ -33,12 +33,12 @@ public class Envio {
     @JoinColumn(name = "destinatario_id", nullable = false)
     private Persona destinatario;
 
-    // ✅ AGREGADO: Relación con Agencia Origen
+    //  AGREGADO: Relación con Agencia Origen
     @ManyToOne
     @JoinColumn(name = "agencia_origen_id", nullable = false)
     private Agencia agenciaOrigen;
 
-    // ✅ AGREGADO: Relación con Agencia Destino
+    //  AGREGADO: Relación con Agencia Destino
     @ManyToOne
     @JoinColumn(name = "agencia_destino_id", nullable = false)
     private Agencia agenciaDestino;

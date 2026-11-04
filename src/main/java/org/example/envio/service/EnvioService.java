@@ -9,16 +9,13 @@ import org.example.envio.model.Envio;
 import org.example.envio.model.EstadoEnvio;
 import org.example.envio.repository.EnvioRepository;
 import org.example.persona.model.Persona;
-import org.example.persona.model.TipoDocumento;
 import org.example.persona.repository.PersonaRepository;
-import org.example.shared.ValidadorDocumento; // <-- IMPORT AGREGADO
+import org.example.shared.ValidadorDocumento; //
 import org.example.usuario.model.Usuario;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -80,9 +77,9 @@ public class EnvioService {
         admision.setRemitente(remitente);
         admision.setContenidoDeclarado(dto.getDescripcionBulto());
         admision.setPesoKg(BigDecimal.valueOf(dto.getPesoEstimado()));
-        admision.setLargoCm(BigDecimal.ONE);
-        admision.setAnchoCm(BigDecimal.ONE);
-        admision.setAltoCm(BigDecimal.ONE);
+        admision.setLargoCm(dto.getLargoCm());
+        admision.setAnchoCm(dto.getAnchoCm());
+        admision.setAltoCm(dto.getAltoCm());
         admision.setDecision(DecisionAdmision.PENDIENTE);
         admision.setFecha(LocalDateTime.now());
 
