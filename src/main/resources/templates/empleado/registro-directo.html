@@ -2,85 +2,112 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Registro Directo en Agencia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Directo en Agencia - Atyra Express</title>
 </head>
-<body>
-<h1>Registro Directo en Agencia</h1>
-<p>Complete los datos del cliente para registrar su envío.</p>
+<body style="font-family:'Inter', Arial, sans-serif; padding:20px; background-color:#EEF6FF; margin:0;">
 
-<form th:action="@{/recepcion/registro-directo}" method="post">
+<div style="max-width:850px; margin:0 auto; background:white; padding:30px; border-radius:16px; box-shadow:0 8px 24px rgba(30,58,95,0.08); border:1px solid #E3EDF8;">
 
-    <h3>Datos del Remitente</h3>
-    <label>Tipo Documento:</label>
-    <select name="remitenteTipoDocumento" id="remitenteTipoDocumento" onchange="actualizarCampos('remitente')">
-        <option value="DNI">DNI</option>
-        <option value="RUC">RUC</option>
-        <option value="PASAPORTE">Pasaporte</option>
-    </select><br>
-
-    <label>N° Documento:</label>
-    <input type="text" name="remitenteDni" id="remitenteDni" required><br>
-
-    <div id="remitente_campos_persona">
-        <label>Nombres:</label>
-        <input type="text" name="remitenteNombres"><br>
-        <label>Apellidos:</label>
-        <input type="text" name="remitenteApellidos"><br>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px;">
+        <div style="background:#FFA13A; width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center;">📦</div>
+        <span style="font-weight:800; color:#1E3A5F; font-size:18px;">Atyra <span style="color:#B86A0F;">Express</span></span>
+        <a href="/panel/empleado" style="margin-left:auto; text-decoration:none; color:#6B86A8; font-size:12px; border:1px solid #E3EDF8; padding:6px 14px; border-radius:999px;">← Volver al Panel</a>
     </div>
 
-    <div id="remitente_campos_empresa" style="display:none;">
-        <label>Razón Social:</label>
-        <input type="text" name="remitenteRazonSocial"><br>
-    </div>
+    <h1 style="color:#1E3A5F; margin:0 0 6px 0; font-size:26px; font-weight:800;">Registro Directo en Agencia</h1>
+    <p style="color:#6B86A8; margin:0 0 24px 0; font-size:14px;">Complete los datos del cliente para registrar su envío.</p>
 
-    <label>Celular:</label>
-    <input type="text" name="remitenteCelular" required><br>
+    <form th:action="@{/recepcion/registro-directo}" method="post">
+        <!-- REMITENTE -->
+        <div style="background:#F6F9FF; border:1px solid #D6E4F5; border-radius:16px; padding:20px; margin-bottom:16px;">
+            <h3 style="color:#1E3A5F; margin:0 0 14px 0; font-size:16px;">👤 Datos del Remitente</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Tipo Documento</label>
+                    <select name="remitenteTipoDocumento" id="remitenteTipoDocumento" onchange="actualizarCampos('remitente')" style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; background:white; outline:none;">
+                        <option value="DNI">DNI</option>
+                        <option value="RUC">RUC</option>
+                        <option value="PASAPORTE">Pasaporte</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">N° Documento</label>
+                    <input type="text" name="remitenteDni" id="remitenteDni" required style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+                </div>
+            </div>
+            <div id="remitente_campos_persona" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+                <div><label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Nombres</label><input type="text" name="remitenteNombres" style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;"></div>
+                <div><label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Apellidos</label><input type="text" name="remitenteApellidos" style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;"></div>
+            </div>
+            <div id="remitente_campos_empresa" style="display:none; margin-top:12px;">
+                <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Razón Social</label>
+                <input type="text" name="remitenteRazonSocial" style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+            </div>
+            <div style="margin-top:12px;">
+                <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Celular</label>
+                <input type="text" name="remitenteCelular" required placeholder="+51 999 999 999" style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+            </div>
+        </div>
 
-    <h3>Datos del Destinatario</h3>
-    <label>Tipo Documento:</label>
-    <select name="destinatarioTipoDocumento" id="destinatarioTipoDocumento" onchange="actualizarCampos('destinatario')">
-        <option value="DNI">DNI</option>
-        <option value="RUC">RUC</option>
-        <option value="PASAPORTE">Pasaporte</option>
-    </select><br>
+        <!-- DESTINATARIO -->
+        <div style="background:#FFFBF4; border:1px solid #FFD9A8; border-radius:16px; padding:20px; margin-bottom:16px;">
+            <h3 style="color:#B86A0F; margin:0 0 14px 0; font-size:16px;">📍 Datos del Destinatario</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Tipo Documento</label>
+                    <select name="destinatarioTipoDocumento" id="destinatarioTipoDocumento" onchange="actualizarCampos('destinatario')" style="width:100%; padding:11px 12px; border:1px solid #FFD9A8; border-radius:12px; font-size:14px; background:white; outline:none;">
+                        <option value="DNI">DNI</option>
+                        <option value="RUC">RUC</option>
+                        <option value="PASAPORTE">Pasaporte</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">N° Documento</label>
+                    <input type="text" name="destinatarioDni" id="destinatarioDni" required style="width:100%; padding:11px 12px; border:1px solid #FFD9A8; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+                </div>
+            </div>
+            <div id="destinatario_campos_persona" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px;">
+                <div><label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Nombres</label><input type="text" name="destinatarioNombres" style="width:100%; padding:11px 12px; border:1px solid #FFD9A8; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;"></div>
+                <div><label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Apellidos</label><input type="text" name="destinatarioApellidos" style="width:100%; padding:11px 12px; border:1px solid #FFD9A8; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;"></div>
+            </div>
+            <div id="destinatario_campos_empresa" style="display:none; margin-top:12px;">
+                <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Razón Social</label>
+                <input type="text" name="destinatarioRazonSocial" style="width:100%; padding:11px 12px; border:1px solid #FFD9A8; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+            </div>
+            <div style="margin-top:12px;">
+                <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Celular</label>
+                <input type="text" name="destinatarioCelular" required placeholder="+51 999 999 999" style="width:100%; padding:11px 12px; border:1px solid #FFD9A8; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+            </div>
+        </div>
 
-    <label>N° Documento:</label>
-    <input type="text" name="destinatarioDni" id="destinatarioDni" required><br>
-
-    <div id="destinatario_campos_persona">
-        <label>Nombres:</label>
-        <input type="text" name="destinatarioNombres"><br>
-        <label>Apellidos:</label>
-        <input type="text" name="destinatarioApellidos"><br>
-    </div>
-
-    <div id="destinatario_campos_empresa" style="display:none;">
-        <label>Razón Social:</label>
-        <input type="text" name="destinatarioRazonSocial"><br>
-    </div>
-
-    <label>Celular:</label>
-    <input type="text" name="destinatarioCelular" required><br>
-
-    <h3>Datos del Envío</h3>
-
-    <label>Agencia Destino:</label>
-    <select name="agenciaDestinoId" required>
-        <option value="">-- Seleccione --</option>
-        <option th:each="a : ${agencias}" th:value="${a.id}" th:text="${a.nombre}"></option>
-    </select><br>
-
-    <label>Tipo de Paquete:</label>
-    <select name="tipoPaqueteId" required>
-        <option value="">-- Seleccione --</option>
-        <option th:each="tp : ${tiposPaquete}" th:value="${tp.id}" th:text="${tp.nombre}"></option>
-    </select><br>
-
-    <label>Descripción del paquete:</label>
-    <input type="text" name="descripcionBulto" required><br>
-
-    <button type="submit">Continuar al Pesaje</button>
-</form>
+        <!-- ENVIO -->
+        <div style="background:white; border:1px solid #E3EDF8; border-radius:16px; padding:20px;">
+            <h3 style="color:#1E3A5F; margin:0 0 14px 0; font-size:16px;">📦 Datos del Envío</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Agencia Destino</label>
+                    <select name="agenciaDestinoId" required style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; background:white; outline:none;">
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="a : ${agencias}" th:value="${a.id}" th:text="${a.nombre}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Tipo de Paquete</label>
+                    <select name="tipoPaqueteId" required style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; background:white; outline:none;">
+                        <option value="">-- Seleccione --</option>
+                        <option th:each="tp : ${tiposPaquete}" th:value="${tp.id}" th:text="${tp.nombre}"></option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top:12px;">
+                <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Descripción del paquete</label>
+                <input type="text" name="descripcionBulto" required placeholder="Ej: Documentos, ropa, tecnología..." style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none;">
+            </div>
+            <button type="submit" style="width:100%; margin-top:18px; padding:14px; background:#1E3A5F; color:white; border:none; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer;">Continuar al Pesaje →</button>
+        </div>
+    </form>
+</div>
 
 <script>
     function actualizarCampos(prefijo) {
@@ -88,30 +115,20 @@
         const inputDoc = document.getElementById(prefijo + 'Dni');
         const divPersona = document.getElementById(prefijo + '_campos_persona');
         const divEmpresa = document.getElementById(prefijo + '_campos_empresa');
-
         if (!select || !inputDoc) return;
-
         const tipo = select.value;
-
         if (tipo === 'DNI') {
-            inputDoc.maxLength = 8;
-            inputDoc.placeholder = "8 dígitos";
-            divPersona.style.display = 'block';
-            divEmpresa.style.display = 'none';
+            inputDoc.maxLength = 8; inputDoc.placeholder = "8 dígitos";
+            divPersona.style.display = 'grid'; divEmpresa.style.display = 'none';
         } else if (tipo === 'RUC') {
-            inputDoc.maxLength = 11;
-            inputDoc.placeholder = "11 dígitos";
-            divPersona.style.display = 'none';
-            divEmpresa.style.display = 'block';
+            inputDoc.maxLength = 11; inputDoc.placeholder = "11 dígitos";
+            divPersona.style.display = 'none'; divEmpresa.style.display = 'block';
         } else if (tipo === 'PASAPORTE') {
-            inputDoc.maxLength = 9;
-            inputDoc.placeholder = "9 caracteres";
-            divPersona.style.display = 'block';
-            divEmpresa.style.display = 'none';
+            inputDoc.maxLength = 9; inputDoc.placeholder = "9 caracteres";
+            divPersona.style.display = 'grid'; divEmpresa.style.display = 'none';
         }
         inputDoc.value = '';
     }
-
     document.addEventListener("DOMContentLoaded", function() {
         actualizarCampos('remitente');
         actualizarCampos('destinatario');
