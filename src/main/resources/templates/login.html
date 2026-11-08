@@ -2,25 +2,46 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login - Encomiendas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Atyra Express</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', Arial, sans-serif; background-color: #EEF6FF; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .login-card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 24px rgba(30,58,95,0.08); width: 100%; max-width: 400px; text-align: center; }
+        .logo-icon { background: #FFA13A; width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 15px auto; }
+        h2 { color: #1E3A5F; margin-bottom: 5px; }
+        .subtitle { color: #6B86A8; font-size: 14px; margin-bottom: 30px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 700; color: #6B86A8; margin-bottom: 6px; }
+        input { width: 100%; padding: 12px; border: 1px solid #D6E4F5; border-radius: 8px; background: #F6F9FF; outline: none; transition: border 0.2s; }
+        input:focus { border-color: #FFA13A; background: #FFFBF4; }
+        .btn-submit { width: 100%; padding: 14px; background: #FFA13A; color: #1E3A5F; border: none; border-radius: 999px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
+        .btn-submit:hover { opacity: 0.9; }
+        .alert-error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; font-weight: bold; }
+    </style>
 </head>
 <body>
-<h2>Iniciar Sesión</h2>
+<div class="login-card">
+    <div class="logo-icon">📦</div>
+    <h2>Atyra Express</h2>
+    <p class="subtitle">Ingresa a tu cuenta</p>
 
-<div th:if="${param.error}" style="color: red;">
-    Usuario o contraseña incorrectos.
+    <div th:if="${param.error}" class="alert-error">Usuario o contraseña incorrectos.</div>
+    <div th:if="${param.logout}" style="color: green; font-size: 13px; font-weight: bold; margin-bottom: 20px;">Has cerrado sesión exitosamente.</div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" name="password" required>
+        </div>
+        <button type="submit" class="btn-submit">Ingresar</button>
+    </form>
+    <br>
+    <a th:href="@{/}" style="color: #6B86A8; text-decoration: none; font-size: 13px;">← Volver al inicio</a>
 </div>
-
-<form th:action="@{/login}" method="post">
-    <div>
-        <label>Usuario: </label>
-        <input type="text" name="username" required>
-    </div>
-    <div>
-        <label>Contraseña: </label>
-        <input type="password" name="password" required>
-    </div>
-    <button type="submit">Ingresar</button>
-</form>
 </body>
 </html>

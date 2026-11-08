@@ -2,22 +2,86 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenido al Sistema de Encomiendas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atyra Express - Envíos Seguros y Rápidos</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', Arial, sans-serif; background-color: #EEF6FF; color: #1E3A5F; line-height: 1.6; }
+        .navbar { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(30,58,95,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo-header { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { background: #FFA13A; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .logo-text { font-weight: 800; color: #1E3A5F; font-size: 22px; }
+        .logo-text span { color: #B86A0F; }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-links a { text-decoration: none; color: #6B86A8; font-weight: 700; font-size: 14px; transition: color 0.2s; }
+        .nav-links a:hover { color: #1E3A5F; }
+        .btn-login { background: #FFA13A; color: #1E3A5F !important; padding: 10px 24px; border-radius: 999px; font-weight: 800 !important; }
+        .btn-login:hover { opacity: 0.9; }
+        .hero { background: linear-gradient(135deg, #1E3A5F 0%, #2A4D7A 100%); color: white; text-align: center; padding: 80px 20px; }
+        .hero h1 { font-size: 42px; font-weight: 800; margin-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .hero .slogan { font-size: 20px; color: #FFA13A; font-weight: 700; margin-bottom: 40px; letter-spacing: 1px; text-transform: uppercase; }
+        .hero-buttons { display: flex; justify-content: center; gap: 15px; }
+        .btn-primary { background: #FFA13A; color: #1E3A5F; padding: 15px 32px; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 16px; transition: transform 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-secondary { background: transparent; color: white; border: 2px solid white; padding: 15px 32px; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 16px; transition: background 0.2s; }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+        .section { padding: 60px 20px; max-width: 1000px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 28px; font-weight: 800; margin-bottom: 40px; color: #1E3A5F; }
+        .about-grid { display: flex; gap: 30px; align-items: center; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 8px 24px rgba(30,58,95,0.08); }
+        .about-text { flex: 1; color: #4A6583; }
+        .about-image { flex: 1; text-align: center; font-size: 100px; }
+        .packages-grid { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        .package-card { background: white; border-radius: 16px; padding: 30px 20px; width: 220px; text-align: center; box-shadow: 0 4px 15px rgba(30,58,95,0.05); border: 1px solid #E3EDF8; transition: transform 0.2s; }
+        .package-card:hover { transform: translateY(-5px); }
+        .package-icon { font-size: 40px; margin-bottom: 15px; }
+        .package-card h3 { font-size: 18px; margin-bottom: 8px; color: #1E3A5F; }
+        .package-card p { font-size: 13px; color: #6B86A8; }
+        footer { background: #1E3A5F; color: #A0B3C9; text-align: center; padding: 30px 20px; margin-top: 40px; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
-
-<h1>📦 Sistema de Gestión de Encomiendas</h1>
-<p>Bienvenido. Envía y rastrea tus paquetes de manera rápida y segura.</p>
-
-<br>
-<!-- Botón que lleva a la pantalla de login -->
-<a href="/login" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-    Iniciar Sesión
-</a>
-
-<br><br>
-<!-- Enlace público a la consulta de paquetes (Módulo 9) -->
-<a href="/consulta">Rastrear mi paquete (Consulta pública)</a>
-
+<body>
+<nav class="navbar">
+    <div class="logo-header">
+        <div class="logo-icon">📦</div>
+        <span class="logo-text">Atyra <span>Express</span></span>
+    </div>
+    <div class="nav-links">
+        <a th:href="@{/consulta}">Consultar Envío</a>
+        <a th:href="@{/login}" class="btn-login">Iniciar Sesión</a>
+    </div>
+</nav>
+<header class="hero">
+    <h1>Tus paquetes llegan seguros y a tiempo a cualquier destino del Perú.</h1>
+    <p class="slogan">Atyra Express: Tu carga en buenas manos.</p>
+    <div class="hero-buttons">
+        <a th:href="@{/consulta}" class="btn-secondary">Rastrear mi paquete</a>
+        <a th:href="@{/login}" class="btn-primary">Enviar un paquete ahora</a>
+    </div>
+</header>
+<section class="section">
+    <h2 class="section-title">¿Quiénes Somos?</h2>
+    <div class="about-grid">
+        <div class="about-text">
+            <p>En <strong>Atyra Express</strong>, somos una empresa peruana dedicada al transporte de encomiendas interprovinciales. Nacimos con la misión de conectar a las personas y empresas de todo el país con un servicio rápido, seguro y confiable.</p>
+            <br>
+            <p>Contamos con una red de agencias estratégicamente ubicadas, un equipo humano comprometido y la tecnología necesaria para que puedas rastrear tu paquete en todo momento.</p>
+        </div>
+        <div class="about-image">🚚</div>
+    </div>
+</section>
+<section class="section">
+    <h2 class="section-title">¿Qué puedes enviar?</h2>
+    <div class="packages-grid">
+        <div class="package-card"><div class="package-icon">✉️</div><h3>Sobre</h3><p>Documentos y sobres ligeros de hasta 1 kg.</p></div>
+        <div class="package-card"><div class="package-icon">📦</div><h3>Caja Pequeña</h3><p>Paquetes pequeños y livianos.</p></div>
+        <div class="package-card"><div class="package-icon">📦</div><h3>Caja Mediana</h3><p>Para envíos de mayor volumen y peso.</p></div>
+        <div class="package-card"><div class="package-icon">📦</div><h3>Caja Grande</h3><p>Cajas de gran tamaño para mudanzas o carga.</p></div>
+        <div class="package-card"><div class="package-icon">🏭</div><h3>Envío Industrial</h3><p>Carga especializada y de gran volumen.</p></div>
+    </div>
+</section>
+<footer>
+    <p>© 2026 Atyra Express - Todos los derechos reservados.</p>
+    <p>Envíos interprovinciales con seguridad y garantía.</p>
+</footer>
 </body>
 </html>
