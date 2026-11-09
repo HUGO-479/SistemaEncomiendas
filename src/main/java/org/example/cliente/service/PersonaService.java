@@ -1,9 +1,9 @@
-package org.example.persona.service;
+package org.example.cliente.service;
 
-import org.example.persona.dto.ClienteRegistroDTO;
-import org.example.persona.model.Persona;
-import org.example.persona.model.TipoDocumento;
-import org.example.persona.repository.PersonaRepository;
+import org.example.cliente.dto.ClienteRegistroDTO;
+import org.example.cliente.model.Persona;
+import org.example.cliente.model.TipoDocumento;
+import org.example.cliente.repository.ClienteRepository;
 import org.example.shared.ValidadorDocumento;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,14 +13,14 @@ import java.util.Optional;
 @Service
 public class PersonaService {
 
-    private final PersonaRepository personaRepository;
+    private final ClienteRepository clienteRepository;
 
-    public PersonaService(PersonaRepository personaRepository) {
-        this.personaRepository = personaRepository;
+    public PersonaService(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
     }
 
     public Optional<Persona> buscarPorDocumento(TipoDocumento tipo, String numero) {
-        return personaRepository.findByTipoDocumentoAndNumeroDocumento(tipo, numero);
+        return clienteRepository.findByTipoDocumentoAndNumeroDocumento(tipo, numero);
     }
 
     @Transactional
@@ -48,6 +48,6 @@ public class PersonaService {
         nuevoCliente.setTelefono(dto.getCelular());
         nuevoCliente.setDireccion(dto.getDireccion());
 
-        return personaRepository.save(nuevoCliente);
+        return clienteRepository.save(nuevoCliente);
     }
 }

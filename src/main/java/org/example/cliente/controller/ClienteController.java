@@ -1,6 +1,6 @@
-package org.example.persona.controller;
+package org.example.cliente.controller;
 
-import org.example.persona.service.PersonaService;
+import org.example.cliente.service.PersonaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

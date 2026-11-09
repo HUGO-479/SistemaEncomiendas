@@ -2,45 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mis Envíos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Envíos - Atyra Express</title>
+
+    <!-- Enlace al CSS específico de Clientes -->
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
 </head>
-<body>
-<h1>Mis Envíos</h1>
-<a th:href="@{/cliente/pre-registro}">Hacer un nuevo Pre-registro</a>
+<body class="cliente-body">
 
-<br><br>
+<div class="cliente-container">
 
-<!-- Mensaje si no hay envíos -->
-<div th:if="${envios == null || envios.isEmpty()}" style="color: red;">
-    Aún no tienes envíos registrados.
+    <!-- Encabezado -->
+    <div class="cliente-header">
+        <div class="cliente-logo">
+            <div class="cliente-logo-icon">📦</div>
+            <span>Atyra <span style="color: var(--accent-dk);">Express</span></span>
+        </div>
+    </div>
+
+    <h1>Mis Envíos</h1>
+    <p class="cliente-subtitle">Revisa el estado de tus paquetes enviados.</p>
+
+    <!-- Botón para nuevo pre-registro -->
+    <div style="margin-bottom: 20px;">
+        <a th:href="@{/cliente/pre-registro}" class="btn-submit" style="text-decoration: none; font-size: 14px;">+ Hacer un nuevo Pre-registro</a>
+    </div>
+
+    <!-- Mensaje si no hay envíos -->
+    <div th:if="${envios == null || envios.isEmpty()}" class="cliente-alert alert-error">
+        Aún no tienes envíos registrados.
+    </div>
+
+    <!-- Tabla de envíos -->
+    <div class="tabla-envios-responsive" th:if="${envios != null && !envios.isEmpty()}">
+        <table class="tabla-envios">
+            <thead>
+            <tr>
+                <th>Código Guía</th>
+                <th>Destinatario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="envio : ${envios}">
+                <td th:text="${envio.numeroGuia}" style="font-weight: 700; color: var(--primary);"></td>
+                <td th:text="${envio.destinatario.nombres + ' ' + envio.destinatario.apellidos}"></td>
+                <td>
+                    <span class="badge-estado" th:text="${envio.estado}"></span>
+                </td>
+                <td>
+                    <!-- Botón para generar el Ticket (PDF) -->
+                    <a th:href="@{/ticket/generar/{id}(id=${envio.id})}" target="_blank" class="btn-ticket">Generar Ticket</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer y Logout -->
+    <div class="cliente-footer-actions" style="justify-content: flex-end;">
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn-logout-cliente">Cerrar Sesión</button>
+        </form>
+    </div>
+
 </div>
 
-<!-- Tabla de envíos -->
-<table border="1" th:if="${envios != null && !envios.isEmpty()}">
-    <thead>
-    <tr>
-        <th>Código Guía</th>
-        <th>Destinatario</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="envio : ${envios}">
-        <td th:text="${envio.numeroGuia}"></td>
-        <td th:text="${envio.destinatario.nombres + ' ' + envio.destinatario.apellidos}"></td>
-        <td th:text="${envio.estado}"></td>
-        <td>
-            <!-- Botón para generar el Ticket (PDF) -->
-            <a th:href="@{/ticket/generar/{id}(id=${envio.id})}" target="_blank">Generar Ticket</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<br>
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Cerrar Sesión</button>
-</form>
 </body>
 </html>

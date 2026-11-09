@@ -1,7 +1,7 @@
-package org.example.persona.dto;
+package org.example.cliente.dto;
 
 import lombok.Data;
-import org.example.persona.model.TipoDocumento;
+import org.example.cliente.model.TipoDocumento;
 
 @Data // <--- Si usas Lombok, esto genera los getters y setters
 public class ClienteRegistroDTO {

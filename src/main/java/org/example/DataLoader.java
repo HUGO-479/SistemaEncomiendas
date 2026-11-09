@@ -1,8 +1,8 @@
 package org.example;
 
-import org.example.persona.model.Persona;
-import org.example.persona.model.TipoDocumento;
-import org.example.persona.repository.PersonaRepository;
+import org.example.cliente.model.Persona;
+import org.example.cliente.model.TipoDocumento;
+import org.example.cliente.repository.ClienteRepository;
 import org.example.usuario.model.Rol;
 import org.example.usuario.model.Usuario;
 import org.example.usuario.repository.RolRepository;
@@ -23,12 +23,12 @@ public class DataLoader implements CommandLineRunner {
     private static final String CLIENTE_PASSWORD = "clien123";
 
     private final RolRepository rolRepo;
-    private final PersonaRepository personaRepo;
+    private final ClienteRepository personaRepo;
     private final UsuarioRepository usuarioRepo;
     private final PasswordEncoder encoder;
 
     public DataLoader(RolRepository rolRepo,
-                      PersonaRepository personaRepo,
+                      ClienteRepository personaRepo,
                       UsuarioRepository usuarioRepo,
                       PasswordEncoder encoder) {
         this.rolRepo = rolRepo;

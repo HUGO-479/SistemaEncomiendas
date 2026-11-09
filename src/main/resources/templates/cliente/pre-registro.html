@@ -4,71 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pre-registro - Atyra Express</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', Arial, sans-serif; background-color: #EEF6FF; margin: 0; padding: 20px; color: #1E3A5F; }
-        .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(30,58,95,0.08); border: 1px solid #E3EDF8; }
-        .logo-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .logo-icon { background: #FFA13A; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .logo-text { font-weight: 800; color: #1E3A5F; font-size: 18px; }
-        .logo-text span { color: #B86A0F; }
-        h1 { font-size: 24px; font-weight: 800; margin: 0 0 6px 0; }
-        .subtitle { color: #6B86A8; margin: 0 0 28px 0; }
-        h3 { color: #1E3A5F; margin-top: 24px; margin-bottom: 12px; font-size: 16px; border-bottom: 1px solid #EAF0F8; padding-bottom: 8px; }
-        .form-group { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 12px; }
-        .form-field { flex: 1; min-width: 200px; display: flex; flex-direction: column; }
-        label { font-size: 13px; font-weight: 700; color: #6B86A8; margin-bottom: 4px; }
-        input, select { padding: 10px 12px; border: 1px solid #D6E4F5; border-radius: 8px; font-size: 14px; font-family: inherit; background-color: #F6F9FF; outline: none; transition: border-color 0.2s; }
-        input:focus, select:focus { border-color: #FFA13A; background-color: #FFFBF4; }
-        .btn-submit { display: inline-block; padding: 12px 24px; background-color: #FFA13A; color: #1E3A5F; text-decoration: none; border-radius: 999px; font-weight: 800; border: none; cursor: pointer; margin-top: 20px; transition: opacity 0.2s; }
-        .btn-submit:hover { opacity: 0.9; }
-        .btn-back { display: inline-block; padding: 10px 20px; background-color: transparent; color: #6B86A8; text-decoration: none; border: 1px solid #E3EDF8; border-radius: 999px; font-size: 13px; margin-top: 20px; cursor: pointer; }
-        .alert { padding: 12px; border-radius: 8px; margin-top: 20px; font-weight: bold; font-size: 14px; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .alert-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .footer-actions { margin-top: 30px; padding-top: 20px; border-top: 1px solid #EAF0F8; display: flex; justify-content: space-between; align-items: center; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
 </head>
-<body>
-<div class="container">
-    <div class="logo-header">
-        <div class="logo-icon">📦</div>
-        <span class="logo-text">Atyra <span>Express</span></span>
+<body class="cliente-body">
+
+<div class="cliente-container">
+
+    <!-- Logo -->
+    <div class="cliente-header">
+        <div class="cliente-logo">
+            <div class="cliente-logo-icon">📦</div>
+            <span>Atyra <span style="color: var(--accent-dk);">Express</span></span>
+        </div>
     </div>
+
     <h1>Pre-registro de Encomienda</h1>
-    <p class="subtitle">Complete los datos de su envío.</p>
+    <p class="cliente-subtitle">Complete los datos de su envío.</p>
+
+    <!-- Alertas -->
+    <div th:if="${mensajeExito}" class="cliente-alert alert-success" th:text="${mensajeExito}"></div>
+    <div th:if="${mensajeError}" class="cliente-alert alert-error" th:text="${mensajeError}"></div>
 
     <form th:action="@{/cliente/pre-registro/guardar}" th:object="${preRegistro}" method="post">
 
-        <h3>Datos del Remitente</h3>
-        <div class="form-group">
-            <div class="form-field">
+        <!-- SECCIÓN: REMITENTE (DATOS BLOQUEADOS) -->
+        <h3 class="cliente-form-section-title">Datos del Remitente (Tú)</h3>
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
                 <label>Tipo Documento</label>
-                <select th:field="*{remitenteTipoDocumento}" id="remitenteTipoDocumento" onchange="actualizarCampos('remitente')">
-                    <option value="DNI">DNI</option>
-                    <option value="RUC">RUC</option>
-                    <option value="PASAPORTE">Pasaporte</option>
-                </select>
+                <input type="text" th:value="${remitenteLogueado.tipoDocumento}" readonly class="input-readonly">
+                <!-- Campos ocultos para enviar al backend -->
+                <input type="hidden" th:field="*{remitenteTipoDocumento}" th:value="${remitenteLogueado.tipoDocumento}">
             </div>
-            <div class="form-field">
+            <div class="cliente-form-field">
                 <label>N° Documento</label>
-                <input type="text" th:field="*{remitenteDni}" id="remitenteDni" required>
+                <input type="text" th:value="${remitenteLogueado.numeroDocumento}" readonly class="input-readonly">
+                <input type="hidden" th:field="*{remitenteDni}" th:value="${remitenteLogueado.numeroDocumento}">
             </div>
-        </div>
-        <div class="form-group" id="remitente_campos_persona">
-            <div class="form-field"><label>Nombres</label><input type="text" th:field="*{remitenteNombres}"></div>
-            <div class="form-field"><label>Apellidos</label><input type="text" th:field="*{remitenteApellidos}"></div>
-        </div>
-        <div class="form-group" id="remitente_campos_empresa" style="display:none;">
-            <div class="form-field"><label>Razón Social</label><input type="text" th:field="*{remitenteRazonSocial}"></div>
-        </div>
-        <div class="form-group">
-            <div class="form-field"><label>Celular</label><input type="text" th:field="*{remitenteCelular}" required></div>
         </div>
 
-        <h3>Datos del Destinatario</h3>
-        <div class="form-group">
-            <div class="form-field">
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
+                <label>Nombres y Apellidos</label>
+                <input type="text" th:value="${remitenteLogueado.nombres + ' ' + remitenteLogueado.apellidos}" readonly class="input-readonly">
+                <input type="hidden" th:field="*{remitenteNombres}" th:value="${remitenteLogueado.nombres}">
+                <input type="hidden" th:field="*{remitenteApellidos}" th:value="${remitenteLogueado.apellidos}">
+            </div>
+        </div>
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
+                <label>Celular</label>
+                <input type="text" th:value="${remitenteLogueado.telefono}" readonly class="input-readonly">
+                <input type="hidden" th:field="*{remitenteCelular}" th:value="${remitenteLogueado.telefono}">
+            </div>
+        </div>
+
+        <!-- SECCIÓN: DESTINATARIO -->
+        <h3 class="cliente-form-section-title">Datos del Destinatario</h3>
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
                 <label>Tipo Documento</label>
                 <select th:field="*{destinatarioTipoDocumento}" id="destinatarioTipoDocumento" onchange="actualizarCampos('destinatario')">
                     <option value="DNI">DNI</option>
@@ -76,32 +73,41 @@
                     <option value="PASAPORTE">Pasaporte</option>
                 </select>
             </div>
-            <div class="form-field">
+            <div class="cliente-form-field">
                 <label>N° Documento</label>
                 <input type="text" th:field="*{destinatarioDni}" id="destinatarioDni" required>
             </div>
         </div>
-        <div class="form-group" id="destinatario_campos_persona">
-            <div class="form-field"><label>Nombres</label><input type="text" th:field="*{destinatarioNombres}"></div>
-            <div class="form-field"><label>Apellidos</label><input type="text" th:field="*{destinatarioApellidos}"></div>
-        </div>
-        <div class="form-group" id="destinatario_campos_empresa" style="display:none;">
-            <div class="form-field"><label>Razón Social</label><input type="text" th:field="*{destinatarioRazonSocial}"></div>
-        </div>
-        <div class="form-group">
-            <div class="form-field"><label>Celular</label><input type="text" th:field="*{destinatarioCelular}" required></div>
+
+        <div class="cliente-form-group" id="destinatario_campos_persona">
+            <div class="cliente-form-field"><label>Nombres</label><input type="text" th:field="*{destinatarioNombres}"></div>
+            <div class="cliente-form-field"><label>Apellidos</label><input type="text" th:field="*{destinatarioApellidos}"></div>
         </div>
 
-        <h3>Datos del Envío</h3>
-        <div class="form-group">
-            <div class="form-field">
+        <div class="cliente-form-group" id="destinatario_campos_empresa" style="display:none;">
+            <div class="cliente-form-field"><label>Razón Social</label><input type="text" th:field="*{destinatarioRazonSocial}"></div>
+        </div>
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
+                <label>Celular</label>
+                <!-- ✅ Validación de 9 dígitos exactos -->
+                <input type="text" th:field="*{destinatarioCelular}" required maxlength="9" pattern="[0-9]{9}" title="Debe ingresar 9 dígitos numéricos">
+            </div>
+        </div>
+
+        <!-- SECCIÓN: ENVÍO -->
+        <h3 class="cliente-form-section-title">Datos del Envío</h3>
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
                 <label>Agencia Origen</label>
                 <select th:field="*{agenciaOrigenId}" required>
                     <option value="">-- Seleccione --</option>
                     <option th:each="a : ${agencias}" th:value="${a.id}" th:text="${a.nombre}"></option>
                 </select>
             </div>
-            <div class="form-field">
+            <div class="cliente-form-field">
                 <label>Agencia Destino</label>
                 <select th:field="*{agenciaDestinoId}" required>
                     <option value="">-- Seleccione --</option>
@@ -109,35 +115,46 @@
                 </select>
             </div>
         </div>
-        <div class="form-group">
-            <div class="form-field">
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
                 <label>Tipo de Paquete</label>
                 <select th:field="*{tipoPaqueteId}" required>
                     <option value="">-- Seleccione --</option>
                     <option th:each="tp : ${tiposPaquete}" th:value="${tp.id}" th:text="${tp.nombre}"></option>
                 </select>
             </div>
-            <div class="form-field">
+            <div class="cliente-form-field">
                 <label>Descripción</label>
                 <input type="text" th:field="*{descripcionBulto}" required>
             </div>
         </div>
-        <div class="form-group">
-            <div class="form-field">
+
+        <div class="cliente-form-group">
+            <div class="cliente-form-field">
                 <label>Peso aproximado (kg)</label>
                 <input type="number" step="0.1" th:field="*{pesoEstimado}" required>
             </div>
         </div>
 
-        <div class="footer-actions">
+        <!-- Botones -->
+        <div class="cliente-footer-actions">
             <a th:href="@{/cliente/dashboard}" class="btn-back">← Volver al Panel</a>
             <button type="submit" class="btn-submit">Generar Pre-registro</button>
         </div>
+
     </form>
 
-    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert alert-error" th:text="${mensajeError}"></div>
 </div>
+
+<!-- Estilo rápido para los campos de solo lectura -->
+<style>
+    .input-readonly {
+        background-color: #f0f0f0;
+        color: #666;
+        cursor: not-allowed;
+    }
+</style>
 
 <script>
     function actualizarCampos(prefijo) {
@@ -152,7 +169,7 @@
         else if (tipo === 'PASAPORTE') { inputDoc.maxLength = 9; inputDoc.placeholder = "9 caracteres"; divPersona.style.display = 'flex'; divEmpresa.style.display = 'none'; }
         inputDoc.value = '';
     }
-    document.addEventListener("DOMContentLoaded", function() { actualizarCampos('remitente'); actualizarCampos('destinatario'); });
+    document.addEventListener("DOMContentLoaded", function() { actualizarCampos('destinatario'); });
 </script>
 </body>
 </html>

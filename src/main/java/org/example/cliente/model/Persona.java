@@ -1,4 +1,4 @@
-package org.example.persona.model;
+package org.example.cliente.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

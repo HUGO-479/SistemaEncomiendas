@@ -7,9 +7,9 @@ import org.example.envio.model.DecisionAdmision;
 import org.example.envio.model.Envio;
 import org.example.envio.model.EstadoEnvio;
 import org.example.envio.repository.EnvioRepository;
-import org.example.persona.model.Persona;
-import org.example.persona.model.TipoDocumento;
-import org.example.persona.repository.PersonaRepository;
+import org.example.cliente.model.Persona;
+import org.example.cliente.model.TipoDocumento;
+import org.example.cliente.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,14 +22,14 @@ import java.util.UUID;
 public class RecepcionService {
 
     private final EnvioRepository envioRepository;
-    private final PersonaRepository personaRepository;
+    private final ClienteRepository clienteRepository;
     private final AgenciaRepository agenciaRepository;
 
     public RecepcionService(EnvioRepository envioRepository,
-                            PersonaRepository personaRepository,
+                            ClienteRepository clienteRepository,
                             AgenciaRepository agenciaRepository) {
         this.envioRepository = envioRepository;
-        this.personaRepository = personaRepository;
+        this.clienteRepository = clienteRepository;
         this.agenciaRepository = agenciaRepository;
     }
 
@@ -55,7 +55,7 @@ public class RecepcionService {
             Long agenciaDestinoId, String descripcionBulto, Agencia agenciaOrigen) {
 
         // 1. Buscar o crear Remitente
-        Persona remitente = personaRepository.findByTipoDocumentoAndNumeroDocumento(remitenteTipoDoc, remitenteDni)
+        Persona remitente = clienteRepository.findByTipoDocumentoAndNumeroDocumento(remitenteTipoDoc, remitenteDni)
                 .orElseGet(() -> {
                     Persona p = new Persona();
                     p.setTipoDocumento(remitenteTipoDoc);
@@ -64,11 +64,11 @@ public class RecepcionService {
                     p.setApellidos(remitenteApellidos);
                     p.setRazonSocial(remitenteRazonSocial);
                     p.setTelefono(remitenteCelular);
-                    return personaRepository.save(p);
+                    return clienteRepository.save(p);
                 });
 
         // 2. Buscar o crear Destinatario
-        Persona destinatario = personaRepository.findByTipoDocumentoAndNumeroDocumento(destinatarioTipoDoc, destinatarioDni)
+        Persona destinatario = clienteRepository.findByTipoDocumentoAndNumeroDocumento(destinatarioTipoDoc, destinatarioDni)
                 .orElseGet(() -> {
                     Persona p = new Persona();
                     p.setTipoDocumento(destinatarioTipoDoc);
@@ -77,7 +77,7 @@ public class RecepcionService {
                     p.setApellidos(destinatarioApellidos);
                     p.setRazonSocial(destinatarioRazonSocial);
                     p.setTelefono(destinatarioCelular);
-                    return personaRepository.save(p);
+                    return clienteRepository.save(p);
                 });
 
         // 3. Obtener Agencia Destino

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.agencia.model.Agencia; // <-- Importante
-import org.example.persona.model.Persona;
+import org.example.cliente.model.Persona;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

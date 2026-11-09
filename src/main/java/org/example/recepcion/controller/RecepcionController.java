@@ -3,7 +3,7 @@ package org.example.recepcion.controller;
 import org.example.agencia.model.Agencia;
 import org.example.agencia.repository.AgenciaRepository;
 import org.example.envio.model.Envio;
-import org.example.persona.model.TipoDocumento;
+import org.example.cliente.model.TipoDocumento;
 import org.example.recepcion.service.RecepcionService;
 import org.example.tipopaquete.repository.TipoPaqueteRepository;
 import org.example.usuario.model.Usuario;
@@ -111,8 +111,13 @@ public class RecepcionController {
                         @RequestParam("peso") Double peso,
                         @RequestParam("largo") Double largo,
                         @RequestParam("ancho") Double ancho,
-                        @RequestParam("alto") Double alto) {
+                        @RequestParam("alto") Double alto,
+                        Model model) {
+
         recepcionService.confirmarRecepcion(id, peso, largo, ancho, alto);
-        return "redirect:/empleado/dashboard";
+
+        // Enviamos el ID al HTML de éxito
+        model.addAttribute("envioId", id);
+        return "empleado/exito"; // ✅ Nueva vista
     }
 }

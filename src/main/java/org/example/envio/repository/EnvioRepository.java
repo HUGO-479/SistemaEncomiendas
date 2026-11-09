@@ -1,7 +1,7 @@
 package org.example.envio.repository;
 
 import org.example.envio.model.Envio;
-import org.example.persona.model.Persona;
+import org.example.cliente.model.Persona;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

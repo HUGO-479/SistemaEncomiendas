@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Formulario de tipo de paquete</title>
+    <title>Formulario de tipo de paquete - Atyra Express</title>
+
+    <!-- Enlace al CSS Global -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 
@@ -18,7 +21,7 @@
 
 <hr>
 
-<p th:if="${error}" th:text="${error}"></p>
+<p th:if="${error}" th:text="${error}" class="form-error-alert"></p>
 
 <form th:action="@{/admin/tipos-paquete/guardar}"
       th:object="${tipo}"

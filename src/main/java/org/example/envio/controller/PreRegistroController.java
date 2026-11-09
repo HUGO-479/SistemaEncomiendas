@@ -33,10 +33,18 @@ public class PreRegistroController {
     }
 
     @GetMapping
-    public String mostrarFormulario(Model model) {
+    public String mostrarFormulario(Model model, Authentication auth) {
+        // 1. Buscamos al cliente que está logueado
+        Usuario clienteLogueado = usuarioRepository.findByUsername(auth.getName()).orElseThrow();
+
+        // 2. Cargamos las agencias y tipos de paquete
         model.addAttribute("agencias", agenciaService.listarTodas());
         model.addAttribute("tiposPaquete", tipoPaqueteRepository.findAll());
         model.addAttribute("preRegistro", new PreRegistroDTO());
+
+        // 3. Enviamos los datos del remitente logueado al HTML
+        model.addAttribute("remitenteLogueado", clienteLogueado.getPersona());
+
         return "cliente/pre-registro";
     }
 
@@ -48,12 +56,10 @@ public class PreRegistroController {
 
             redirect.addFlashAttribute("mensajeExito", "Pre-registro exitoso. Su código es: " + env.getNumeroGuia());
 
-            // ✅ Redirigimos al Dashboard (no al formulario)
             return "redirect:/cliente/dashboard";
         } catch (Exception e) {
             redirect.addFlashAttribute("mensajeError", e.getMessage());
             return "redirect:/cliente/pre-registro";
         }
     }
-
 }

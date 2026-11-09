@@ -1,0 +1,369 @@
+/* =========================================
+   1. VARIABLES GLOBALES (Zona Clientes)
+   ========================================= */
+:root {
+    --bg:              #EEF6FF;
+    --surface:         #FFFFFF;
+    --primary:         #1E3A5F;
+    --accent:          #FFA13A;
+    --accent-dk:       #B86A0F;
+    --text:            #1E3A5F;
+    --muted:           #6B86A8;
+    --border:          #E3EDF8;
+
+    --success-bg:      #d4edda;
+    --success-text:    #155724;
+    --success-border:  #c3e6cb;
+    --error-bg:        #f8d7da;
+    --error-text:      #721c24;
+    --error-border:    #f5c6cb;
+
+    --radius-md:       12px;
+    --radius-lg:       16px;
+    --radius-pill:     999px;
+    --shadow-md:       0 8px 24px rgba(30,58,95,0.08);
+}
+
+/* =========================================
+   2. RESET Y ESTILOS BASE
+   ========================================= */
+* { box-sizing: border-box; }
+
+body.cliente-body {
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: var(--bg);
+    margin: 0;
+    padding: 40px 20px;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* Contenedor principal (Tarjeta blanca) */
+.cliente-container {
+    width: 100%;
+    max-width: 850px;
+    background: var(--surface);
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+}
+
+/* Encabezado y Logo */
+.cliente-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cliente-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.cliente-logo-icon {
+    background: var(--accent);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.cliente-container h1 {
+    font-size: 26px;
+    font-weight: 800;
+    margin: 0 0 6px 0;
+}
+
+.cliente-subtitle {
+    color: var(--muted);
+    margin: 0 0 28px 0;
+    font-size: 15px;
+}
+
+/* =========================================
+   3. ALERTAS Y MENSAJES
+   ========================================= */
+.cliente-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.cliente-alert.alert-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
+}
+.cliente-alert.alert-error {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+}
+
+/* =========================================
+   4. DASHBOARD DEL CLIENTE (Tarjetas)
+   ========================================= */
+.cliente-menu-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.cliente-menu-card {
+    flex: 1;
+    min-width: 220px;
+    border: 1px solid #D6E4F5;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    text-align: center;
+    background: #F6F9FF;
+    text-decoration: none;
+    color: var(--primary);
+    transition: all 0.2s;
+}
+
+.cliente-menu-card:hover {
+    background: #FFFBF4;
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.cliente-menu-icon {
+    width: 48px;
+    height: 48px;
+    background: #E7EEF8;
+    border-radius: 12px;
+    margin: 0 auto 12px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.cliente-menu-card h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+}
+
+.cliente-menu-card p {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0;
+}
+
+/* =========================================
+   5. FORMULARIO DE PRE-REGISTRO
+   ========================================= */
+/* Títulos de sección (Datos Remitente, Destinatario, etc) */
+.cliente-form-section-title {
+    color: var(--primary);
+    margin-top: 28px;
+    margin-bottom: 16px;
+    font-size: 16px;
+    border-bottom: 1px solid #EAF0F8;
+    padding-bottom: 8px;
+}
+
+/* Fila del formulario */
+.cliente-form-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* Columna del formulario */
+.cliente-form-field {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.cliente-form-field label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+
+/* Inputs y Selects */
+.cliente-form-field input,
+.cliente-form-field select {
+    padding: 12px 14px;
+    border: 1px solid #D6E4F5;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #F6F9FF;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.cliente-form-field input:focus,
+.cliente-form-field select:focus {
+    border-color: var(--accent);
+    background-color: #FFFBF4;
+}
+
+/* =========================================
+   6. BOTONES Y FOOTER
+   ========================================= */
+.cliente-footer-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #EAF0F8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Botón Naranja (Generar/Guardar) */
+.btn-submit {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: var(--accent);
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: var(--radius-pill);
+    font-weight: 800;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-submit:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* Botón Gris (Volver) */
+.btn-back {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: var(--muted);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-back:hover {
+    background-color: #F6F9FF;
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Botón Cerrar Sesión (Dashboard) */
+.btn-logout-cliente {
+    padding: 8px 20px;
+    background-color: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.btn-logout-cliente:hover {
+    background-color: #F6F9FF;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+/* =========================================
+   7. RESPONSIVE
+   ========================================= */
+@media (max-width: 600px) {
+    .cliente-container { padding: 20px; }
+    .cliente-footer-actions { flex-direction: column-reverse; }
+    .btn-submit, .btn-back { width: 100%; text-align: center; }
+}
+
+/* =========================================
+   8. TABLA DE MIS ENVÍOS (Cliente)
+   ========================================= */
+.tabla-envios-responsive {
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.tabla-envios {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    text-align: left;
+}
+
+.tabla-envios th {
+    background-color: #F6F9FF;
+    color: var(--primary);
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 14px 12px;
+    border-bottom: 2px solid var(--border);
+}
+
+.tabla-envios td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--border);
+    color: #4A6583;
+    vertical-align: middle;
+}
+
+.tabla-envios tr:hover td {
+    background-color: #F9FBFF;
+}
+
+/* Badge para el estado del envío */
+.badge-estado {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 700;
+    background-color: #E7EEF8;
+    color: var(--primary);
+    border: 1px solid #D6E4F5;
+}
+
+/* Botón para Generar Ticket */
+.btn-ticket {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: opacity 0.2s;
+}
+
+.btn-ticket:hover {
+    opacity: 0.9;
+}

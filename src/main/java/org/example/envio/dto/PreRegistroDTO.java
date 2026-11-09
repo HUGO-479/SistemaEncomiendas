@@ -1,7 +1,7 @@
 package org.example.envio.dto;
 
 import lombok.Data;
-import org.example.persona.model.TipoDocumento;
+import org.example.cliente.model.TipoDocumento;
 
 import java.math.BigDecimal;
 

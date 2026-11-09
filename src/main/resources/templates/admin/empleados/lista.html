@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Empleados</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #EEF6FF; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Gestión de Empleados</h1>
+    <a th:href="@{/admin/empleados/nuevo}">+ Nuevo Empleado</a>
+    <br><br>
+    <a th:href="@{/admin/dashboard}">Volver al panel</a>
+
+    <table>
+        <thead><tr><th>DNI</th><th>Nombres</th><th>Usuario</th><th>Agencia</th></tr></thead>
+        <tbody>
+        <tr th:each="emp : ${empleados}">
+            <td th:text="${emp.persona.numeroDocumento}"></td>
+            <td th:text="${emp.persona.nombres + ' ' + emp.persona.apellidos}"></td>
+            <td th:text="${emp.username}"></td>
+            <td th:text="${emp.agencia != null ? emp.agencia.nombre : 'Sin Agencia'}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

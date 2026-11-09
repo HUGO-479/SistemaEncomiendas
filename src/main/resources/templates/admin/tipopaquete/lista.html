@@ -3,71 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tipos de paquete</title>
+    <title>Tipos de Paquete - Atyra Express</title>
+
+    <!-- Enlace al CSS Global -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
-<body>
+<body class="lista-body">
 
-<h1>Administración de tipos de paquete</h1>
+<div class="agencias-container">
 
-<nav>
-    <a th:href="@{/admin/dashboard}">Panel administrador</a>
-    <a th:href="@{/admin/tipos-paquete/nuevo}">
-        Nuevo tipo de paquete
-    </a>
-</nav>
+    <!-- Encabezado -->
+    <div class="agencias-header">
+        <div class="agencias-logo">
+            <div class="agencias-logo-icon">📦</div>
+            <span>Atyra <span style="color: var(--accent-dk);">Express</span></span>
+        </div>
+        <h1>Administración de Tipos de Paquete</h1>
+    </div>
 
-<hr>
+    <!-- Navegación -->
+    <nav class="agencias-nav">
+        <a th:href="@{/admin/dashboard}">← Panel administrador</a>
+        <a th:href="@{/admin/tipos-paquete/nuevo}">+ Nuevo tipo de paquete</a>
+    </nav>
 
-<p th:if="${exito}" th:text="${exito}"></p>
-<p th:if="${error}" th:text="${error}"></p>
+    <!-- Mensajes -->
+    <p th:if="${exito}" class="agencias-alert alert-success" th:text="${exito}"></p>
+    <p th:if="${error}" class="agencias-alert alert-error" th:text="${error}"></p>
 
-<table border="1" cellpadding="8">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Descripción</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
+    <!-- Tabla -->
+    <div class="agencias-table-responsive">
+        <table class="agencias-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
 
-    <tbody>
+            <tbody>
 
-    <tr th:if="${#lists.isEmpty(tipos)}">
-        <td colspan="5">
-            No existen tipos de paquete registrados.
-        </td>
-    </tr>
+            <tr th:if="${#lists.isEmpty(tipos)}">
+                <td colspan="5" class="agencias-empty">
+                    No existen tipos de paquete registrados.
+                </td>
+            </tr>
 
-    <tr th:each="tipo : ${tipos}">
+            <tr th:each="tipo : ${tipos}">
 
-        <td th:text="${tipo.id}"></td>
-        <td th:text="${tipo.nombre}"></td>
-        <td th:text="${tipo.descripcion}"></td>
+                <td th:text="${tipo.id}"></td>
+                <td th:text="${tipo.nombre}" style="font-weight:700; color:var(--primary);"></td>
+                <td th:text="${tipo.descripcion}"></td>
 
-        <td th:text="${tipo.activo} ? 'Activo' : 'Inactivo'"></td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${tipo.activo} ? 'badge-active' : 'badge-inactive'"
+                          th:text="${tipo.activo} ? 'Activo' : 'Inactivo'"></span>
+                </td>
 
-        <td>
-            <a th:href="@{/admin/tipos-paquete/{id}/editar(id=${tipo.id})}">
-                Editar
-            </a>
+                <td>
+                    <div class="agencias-actions">
+                        <a th:href="@{/admin/tipos-paquete/{id}/editar(id=${tipo.id})}" class="btn-edit">
+                            Editar
+                        </a>
 
-            <form th:action="@{/admin/tipos-paquete/{id}/estado(id=${tipo.id})}"
-                  method="post"
-                  style="display:inline">
+                        <form th:action="@{/admin/tipos-paquete/{id}/estado(id=${tipo.id})}"
+                              method="post">
+                            <button type="submit"
+                                    class="btn-status"
+                                    th:classappend="${tipo.activo} ? 'btn-danger' : 'btn-success'"
+                                    th:text="${tipo.activo} ? 'Desactivar' : 'Activar'"
+                                    onclick="return confirm('¿Confirmar cambio de estado?')">
+                            </button>
+                        </form>
+                    </div>
+                </td>
 
-                <button type="submit"
-                        th:text="${tipo.activo} ? 'Desactivar' : 'Activar'"
-                        onclick="return confirm('¿Confirmar cambio de estado?')">
-                </button>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
-            </form>
-        </td>
-
-    </tr>
-    </tbody>
-</table>
+</div>
 
 </body>
 </html>

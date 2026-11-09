@@ -2,15 +2,15 @@ package org.example.envio.service;
 
 import org.example.agencia.model.Agencia;
 import org.example.agencia.repository.AgenciaRepository;
+import org.example.cliente.repository.ClienteRepository;
 import org.example.envio.dto.PreRegistroDTO;
 import org.example.envio.model.Admision;
 import org.example.envio.model.DecisionAdmision;
 import org.example.envio.model.Envio;
 import org.example.envio.model.EstadoEnvio;
 import org.example.envio.repository.EnvioRepository;
-import org.example.persona.model.Persona;
-import org.example.persona.model.TipoDocumento;
-import org.example.persona.repository.PersonaRepository;
+import org.example.cliente.model.Persona;
+import org.example.cliente.model.TipoDocumento;
 import org.example.shared.ValidadorDocumento;
 import org.example.usuario.model.Usuario;
 import org.springframework.stereotype.Service;
@@ -24,11 +24,11 @@ import java.util.UUID;
 public class EnvioService {
 
     private final EnvioRepository envioRepository;
-    private final PersonaRepository personaRepository;
+    private final ClienteRepository personaRepository;
     private final AgenciaRepository agenciaRepository;
 
     public EnvioService(EnvioRepository envioRepository,
-                        PersonaRepository personaRepository,
+                        ClienteRepository personaRepository,
                         AgenciaRepository agenciaRepository) {
         this.envioRepository = envioRepository;
         this.personaRepository = personaRepository;
@@ -39,27 +39,19 @@ public class EnvioService {
     public Envio registrarPreRegistro(PreRegistroDTO dto, Usuario clienteLogueado) {
 
         // 1. Validar Documentos
-        String nombreRemitente = dto.getRemitenteTipoDocumento() == TipoDocumento.RUC
-                ? dto.getRemitenteRazonSocial() : dto.getRemitenteNombres();
-        ValidadorDocumento.validar(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni(), nombreRemitente);
+        // Para el remitente, usamos los datos de la persona del cliente logueado
+        Persona personaRemitente = clienteLogueado.getPersona();
+        String nombreRemitente = personaRemitente.getTipoDocumento() == TipoDocumento.RUC
+                ? personaRemitente.getRazonSocial() : personaRemitente.getNombres();
+        ValidadorDocumento.validar(personaRemitente.getTipoDocumento(), personaRemitente.getNumeroDocumento(), nombreRemitente);
 
+        // Para el destinatario, usamos los datos del formulario
         String nombreDestinatario = dto.getDestinatarioTipoDocumento() == TipoDocumento.RUC
                 ? dto.getDestinatarioRazonSocial() : dto.getDestinatarioNombres();
         ValidadorDocumento.validar(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni(), nombreDestinatario);
 
-        // 2. Buscar o crear Remitente
-        Persona remitente = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getRemitenteTipoDocumento(), dto.getRemitenteDni())
-                .orElseGet(() -> {
-                    Persona p = new Persona();
-                    p.setTipoDocumento(dto.getRemitenteTipoDocumento());
-                    p.setNumeroDocumento(dto.getRemitenteDni());
-                    p.setNombres(dto.getRemitenteNombres());
-                    p.setApellidos(dto.getRemitenteApellidos());
-                    p.setRazonSocial(dto.getRemitenteRazonSocial());
-                    p.setTelefono(dto.getRemitenteCelular());
-                    p.setDireccion(dto.getRemitenteDireccion());
-                    return personaRepository.save(p);
-                });
+        // 2. Asignar Remitente (El cliente logueado)
+        Persona remitente = personaRemitente;
 
         // 3. Buscar o crear Destinatario
         Persona destinatario = personaRepository.findByTipoDocumentoAndNumeroDocumento(dto.getDestinatarioTipoDocumento(), dto.getDestinatarioDni())
@@ -72,6 +64,7 @@ public class EnvioService {
                     p.setRazonSocial(dto.getDestinatarioRazonSocial());
                     p.setTelefono(dto.getDestinatarioCelular());
                     p.setDireccion(dto.getDestinatarioDireccion());
+                    p.setActivo(true);
                     return personaRepository.save(p);
                 });
 

@@ -4,214 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestión de Agencias - Atyra Express</title>
-    <style>
-        :root {
-            --bg: #EEF6FF;
-            --surface: #FFFFFF;
-            --primary: #1E3A5F;
-            --accent: #FFA13A;
-            --text: #1E3A5F;
-            --muted: #6B86A8;
-            --border: #E3EDF8;
-            --radius: 16px;
-            --shadow: 0 8px 24px rgba(30,58,95,0.08);
-        }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            background: var(--surface);
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-        }
-
-        /* Logo y Encabezado */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        .logo-icon {
-            background: var(--accent);
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-        h1 { font-size: 26px; font-weight: 800; color: var(--primary); }
-
-        /* Navegación */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        .nav a {
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--muted);
-            background: #F6F9FF;
-            padding: 10px 20px;
-            border-radius: 999px;
-            border: 1px solid var(--border);
-            transition: all 0.2s;
-        }
-        .nav a:hover {
-            background: var(--accent);
-            color: var(--primary);
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-
-        /* Mensajes de Éxito/Error */
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .alert-success { background: #E6F6EC; color: #1E7A3E; border: 1px solid #C3E6CB; }
-        .alert-error { background: #FDECEA; color: #C0392B; border: 1px solid #F5C6CB; }
-
-        /* Tabla */
-        .table-responsive {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            text-align: center; /* Centra todo el contenido de la tabla */
-        }
-        th {
-            background-color: #F6F9FF;
-            color: var(--primary);
-            font-weight: 800;
-            text-transform: uppercase;
-            font-size: 12px;
-            padding: 14px 12px;
-            border-bottom: 2px solid var(--border);
-        }
-        td {
-            padding: 14px 12px;
-            border-bottom: 1px solid var(--border);
-            color: #4A6583;
-            vertical-align: middle;
-        }
-        tr:hover td { background-color: #F9FBFF; }
-
-        /* Badges de Estado */
-        .badge {
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-        .badge-active { background: #E6F6EC; color: #1E7A3E; }
-        .badge-inactive { background: #FDECEA; color: #C0392B; }
-
-        /* Botones de Acción */
-        .actions {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-edit {
-            text-decoration: none;
-            padding: 6px 12px;
-            background: #007bff;
-            color: white;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .btn-edit:hover { opacity: 0.9; }
-
-        .btn-status {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
-            color: white;
-            cursor: pointer;
-        }
-        .btn-danger { background: #dc3545; }
-        .btn-danger:hover { opacity: 0.9; }
-        .btn-success { background: #28a745; }
-        .btn-success:hover { opacity: 0.9; }
-
-        /* Mensaje vacío */
-        .empty {
-            text-align: center;
-            font-style: italic;
-            color: var(--muted);
-            padding: 30px;
-        }
-
-        @media (max-width: 768px) {
-            .container { padding: 20px; }
-            th, td { padding: 10px 8px; font-size: 13px; }
-            .actions { flex-direction: column; gap: 5px; }
-        }
-    </style>
+    <!-- Enlace a tu CSS global -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
 
-<div class="container">
+<div class="agencias-container">
 
     <!-- Logo -->
-    <div class="header">
-        <div class="logo">
-            <div class="logo-icon">📦</div>
+    <div class="agencias-header">
+        <div class="agencias-logo">
+            <div class="agencias-logo-icon">📦</div>
             <span>Atyra <span style="color: #B86A0F;">Express</span></span>
         </div>
         <h1>Gestión de Agencias</h1>
     </div>
 
     <!-- Navegación -->
-    <div class="nav">
+    <div class="agencias-nav">
         <a th:href="@{/admin/dashboard}">← Panel principal</a>
         <a th:href="@{/admin/agencias/nueva}">+ Nueva agencia</a>
     </div>
 
     <!-- Mensajes -->
-    <p th:if="${exito}" class="alert alert-success" th:text="${exito}"></p>
-    <p th:if="${error}" class="alert alert-error" th:text="${error}"></p>
+    <p th:if="${exito}" class="agencias-alert alert-success" th:text="${exito}"></p>
+    <p th:if="${error}" class="agencias-alert alert-error" th:text="${error}"></p>
 
     <!-- Tabla -->
-    <div class="table-responsive">
-        <table>
+    <div class="agencias-table-responsive">
+        <table class="agencias-table">
             <thead>
             <tr>
                 <th>ID</th>
@@ -226,7 +48,7 @@
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(agencias)}">
-                <td colspan="8" class="empty">No hay agencias registradas.</td>
+                <td colspan="8" class="agencias-empty">No hay agencias registradas.</td>
             </tr>
 
             <tr th:each="agencia : ${agencias}">
@@ -242,7 +64,7 @@
                           th:text="${agencia.activa} ? 'Activa' : 'Inactiva'"></span>
                 </td>
                 <td>
-                    <div class="actions">
+                    <div class="agencias-actions">
                         <a th:href="@{/admin/agencias/{id}/editar(id=${agencia.id})}" class="btn-edit">Editar</a>
 
                         <form th:action="@{/admin/agencias/{id}/estado(id=${agencia.id})}" method="post" style="display:inline;">

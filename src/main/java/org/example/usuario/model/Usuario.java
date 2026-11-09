@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.agencia.model.Agencia;
-import org.example.persona.model.Persona;
+import org.example.cliente.model.Persona;
 
 import java.util.HashSet;
 import java.util.Set;

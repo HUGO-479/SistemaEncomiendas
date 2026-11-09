@@ -4,56 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel del Cliente - Atyra Express</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', Arial, sans-serif; background-color: #EEF6FF; margin: 0; padding: 20px; color: #1E3A5F; }
-        .container { max-width: 850px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(30,58,95,0.08); border: 1px solid #E3EDF8; }
-        .logo-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .logo-icon { background: #FFA13A; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .logo-text { font-weight: 800; color: #1E3A5F; font-size: 18px; }
-        .logo-text span { color: #B86A0F; }
-        h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px 0; }
-        .subtitle { color: #6B86A8; margin: 0 0 28px 0; }
-        .menu-grid { display: flex; gap: 20px; flex-wrap: wrap; }
-        .menu-card { flex: 1; min-width: 220px; border: 1px solid #D6E4F5; padding: 24px; border-radius: 16px; text-align: center; background: #F6F9FF; text-decoration: none; color: #1E3A5F; transition: all 0.2s; }
-        .menu-card:hover { background: #FFFBF4; border-color: #FFA13A; transform: translateY(-2px); }
-        .menu-icon { width: 48px; height: 48px; background: #E7EEF8; border-radius: 12px; margin: 0 auto 12px auto; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-        .menu-card h3 { margin: 0 0 8px 0; font-size: 16px; }
-        .menu-card p { color: #6B86A8; font-size: 13px; margin: 0; }
-        .footer-actions { text-align: right; margin-top: 30px; padding-top: 20px; border-top: 1px solid #EAF0F8; }
-        .btn-logout { padding: 8px 20px; background-color: transparent; color: #6B86A8; border: 1px solid #E3EDF8; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.2s; }
-        .btn-logout:hover { background-color: #F6F9FF; color: #dc3545; border-color: #dc3545; }
-        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
-    </style>
+
+    <!-- Enlace al CSS específico de Clientes -->
+    <link rel="stylesheet" th:href="@{/css/cliente.css}">
 </head>
-<body>
-<div class="container">
-    <div class="logo-header">
-        <div class="logo-icon">📦</div>
-        <span class="logo-text">Atyra <span>Express</span></span>
+<body class="cliente-body">
+
+<div class="cliente-container">
+
+    <!-- Logo -->
+    <div class="cliente-header">
+        <div class="cliente-logo">
+            <div class="cliente-logo-icon">📦</div>
+            <span>Atyra <span style="color: var(--accent-dk);">Express</span></span>
+        </div>
     </div>
+
     <h1>Panel del Cliente</h1>
-    <p class="subtitle">¿Qué deseas hacer hoy?</p>
+    <p class="cliente-subtitle">¿Qué deseas hacer hoy?</p>
 
-    <div th:if="${mensajeExito}" class="alert-success" th:text="${mensajeExito}"></div>
+    <!-- Mensaje de Éxito -->
+    <div th:if="${mensajeExito}" class="cliente-alert alert-success" th:text="${mensajeExito}"></div>
 
-    <div class="menu-grid">
-        <a th:href="@{/cliente/pre-registro}" class="menu-card">
-            <div class="menu-icon">✉️</div>
+    <!-- Grid de Opciones -->
+    <div class="cliente-menu-grid">
+        <a th:href="@{/cliente/pre-registro}" class="cliente-menu-card">
+            <div class="cliente-menu-icon">✉️</div>
             <h3>Nuevo Envío</h3>
             <p>Registra un nuevo paquete para enviar.</p>
         </a>
-        <a th:href="@{/mis-envios}" class="menu-card">
-            <div class="menu-icon">📋</div>
+        <a th:href="@{/mis-envios}" class="cliente-menu-card">
+            <div class="cliente-menu-icon">📋</div>
             <h3>Mis Envíos</h3>
             <p>Revisa el estado de tus paquetes enviados.</p>
         </a>
     </div>
-    <div class="footer-actions">
+
+    <!-- Footer y Logout -->
+    <div class="cliente-footer-actions">
         <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            <button type="submit" class="btn-logout-cliente">Cerrar Sesión</button>
         </form>
     </div>
+
 </div>
+
 </body>
 </html>
