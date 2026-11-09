@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción Exitosa - Atyra Express</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Inter', Arial, sans-serif; background-color: #EEF6FF; margin: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card { background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 24px rgba(30,58,95,0.08); width: 100%; max-width: 500px; text-align: center; }
+        .logo-icon { background: #FFA13A; width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px auto; }
+        h2 { color: #1E3A5F; margin-bottom: 10px; }
+        p { color: #6B86A8; margin-bottom: 30px; }
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        .btn-pdf { display: block; padding: 14px; background: #007bff; color: white; text-decoration: none; border-radius: 999px; font-weight: 800; font-size: 15px; transition: opacity 0.2s; }
+        .btn-pdf:hover { opacity: 0.9; }
+        .btn-guia { background: #28a745; }
+        .btn-back { display: block; margin-top: 20px; padding: 14px; background: transparent; color: #6B86A8; text-decoration: none; border: 1px solid #E3EDF8; border-radius: 999px; font-weight: 700; font-size: 15px; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo-icon">✅</div>
+    <h2>¡Recepción Exitosa!</h2>
+    <p>El paquete ha sido pesado y recepcionado correctamente. Ahora puede imprimir los documentos.</p>
+
+    <div class="btn-group">
+        <!-- Botón para descargar el Ticket (QR) -->
+        <a th:href="@{/ticket/generar/{id}(id=${envioId})}" target="_blank" class="btn-pdf">
+            🖨️ Imprimir Ticket (QR)
+        </a>
+
+        <!-- Botón para descargar la Guía de Remisión -->
+        <a th:href="@{/ticket/guia/{id}(id=${envioId})}" target="_blank" class="btn-pdf btn-guia">
+            📄 Imprimir Guía de Remisión
+        </a>
+    </div>
+
+    <a th:href="@{/empleado/dashboard}" class="btn-back">← Volver al Panel</a>
+</div>
+</body>
+</html>
