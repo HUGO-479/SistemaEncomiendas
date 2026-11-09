@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -34,25 +35,18 @@ public class RecepcionController {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @GetMapping("/pesar/{id}")
-    public String mostrarFormularioPesar(@PathVariable("id") Long id, Model model) {
-        // Solo pasamos el ID al HTML
-        model.addAttribute("envioId", id);
-        return "empleado/pesar";
-    }
-
-    // 1. Mostrar formulario de búsqueda
+    // ==========================================
+    // FLUJO 1: BUSCAR PRE-REGISTRO
+    // ==========================================
     @GetMapping("/buscar")
     public String mostrarBuscador() {
         return "empleado/buscar";
     }
 
-    // 2. Procesar la búsqueda (DNI, RUC, Pasaporte o Guía)
     @PostMapping("/buscar")
     public String buscar(@RequestParam("busqueda") String busqueda, Model model) {
         try {
             List<Envio> envios = recepcionService.buscarPendientes(busqueda);
-
             if (envios.isEmpty()) {
                 model.addAttribute("error", "No se encontraron envíos pendientes con ese dato.");
             } else {
@@ -65,7 +59,9 @@ public class RecepcionController {
         return "empleado/buscar";
     }
 
-    // 3. Mostrar formulario de Registro Directo
+    // ==========================================
+    // FLUJO 2: REGISTRO DIRECTO
+    // ==========================================
     @GetMapping("/registro-directo")
     public String mostrarRegistroDirecto(Model model) {
         model.addAttribute("agencias", agenciaRepository.findAll());
@@ -73,16 +69,15 @@ public class RecepcionController {
         return "empleado/registro-directo";
     }
 
-    // 4. Procesar el Registro Directo
     @PostMapping("/registro-directo")
     public String guardarRegistroDirecto(
-            @RequestParam("remitenteTipoDocumento") TipoDocumento remitenteTipoDocumento,
+            @RequestParam("remitenteTipoDocumento") TipoDocumento remitenteTipoDoc,
             @RequestParam("remitenteDni") String remitenteDni,
             @RequestParam("remitenteNombres") String remitenteNombres,
             @RequestParam("remitenteApellidos") String remitenteApellidos,
             @RequestParam("remitenteRazonSocial") String remitenteRazonSocial,
             @RequestParam("remitenteCelular") String remitenteCelular,
-            @RequestParam("destinatarioTipoDocumento") TipoDocumento destinatarioTipoDocumento,
+            @RequestParam("destinatarioTipoDocumento") TipoDocumento destinatarioTipoDoc,
             @RequestParam("destinatarioDni") String destinatarioDni,
             @RequestParam("destinatarioNombres") String destinatarioNombres,
             @RequestParam("destinatarioApellidos") String destinatarioApellidos,
@@ -96,28 +91,47 @@ public class RecepcionController {
         Agencia agenciaOrigen = empleado.getAgencia();
 
         Envio envio = recepcionService.registrarDirectoEnAgencia(
-                remitenteTipoDocumento, remitenteDni, remitenteNombres, remitenteApellidos, remitenteRazonSocial, remitenteCelular,
-                destinatarioTipoDocumento, destinatarioDni, destinatarioNombres, destinatarioApellidos, destinatarioRazonSocial, destinatarioCelular,
+                remitenteTipoDoc, remitenteDni, remitenteNombres, remitenteApellidos, remitenteRazonSocial, remitenteCelular,
+                destinatarioTipoDoc, destinatarioDni, destinatarioNombres, destinatarioApellidos, destinatarioRazonSocial, destinatarioCelular,
                 agenciaDestinoId, descripcionBulto, agenciaOrigen
         );
 
         return "redirect:/recepcion/pesar/" + envio.getId();
     }
 
+    // ==========================================
+    // FLUJO 3: PESAJE
+    // ==========================================
+    @GetMapping("/pesar/{id}")
+    public String mostrarFormularioPesar(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("envioId", id);
+        return "empleado/pesar";
+    }
 
-    // 6. Procesar el pesaje
     @PostMapping("/pesar/{id}")
     public String pesar(@PathVariable("id") Long id,
                         @RequestParam("peso") Double peso,
                         @RequestParam("largo") Double largo,
                         @RequestParam("ancho") Double ancho,
                         @RequestParam("alto") Double alto,
-                        Model model) {
+                        RedirectAttributes redirect) {
 
+        // 1. Confirmar la recepción y calcular precio
         recepcionService.confirmarRecepcion(id, peso, largo, ancho, alto);
 
-        // Enviamos el ID al HTML de éxito
-        model.addAttribute("envioId", id);
-        return "empleado/exito"; // ✅ Nueva vista
+        // 2. Enviar mensaje de éxito y ID
+        redirect.addFlashAttribute("mensajeExito", "Recepción exitosa. El paquete ya está en tránsito.");
+        redirect.addFlashAttribute("envioId", id);
+
+        // 3. Redirigir a la vista de éxito
+        return "redirect:/recepcion/exito";
+    }
+
+    // ==========================================
+    // FLUJO 4: PANTALLA DE ÉXITO (Ticket y Guía)
+    // ==========================================
+    @GetMapping("/exito")
+    public String mostrarExito() {
+        return "empleado/exito";
     }
 }

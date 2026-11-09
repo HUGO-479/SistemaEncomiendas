@@ -2,37 +2,71 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Registrar Empleado</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #EEF6FF; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; }
-        .btn { padding: 10px 20px; background-color: #FFA13A; color: white; border-radius: 8px; border: none; cursor: pointer; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h1>Registrar Nuevo Empleado</h1>
-    <div th:if="${param.error}" style="color: red;">El usuario ya existe.</div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Empleado - Atyra Express</title>
 
-    <form th:action="@{/admin/empleados/guardar}" method="post">
-        <div class="form-group"><label>DNI</label><input type="text" name="dni" required></div>
-        <div class="form-group"><label>Nombres</label><input type="text" name="nombres" required></div>
-        <div class="form-group"><label>Apellidos</label><input type="text" name="apellidos" required></div>
-        <div class="form-group"><label>Celular</label><input type="text" name="celular" required></div>
-        <div class="form-group"><label>Usuario</label><input type="text" name="username" required></div>
-        <div class="form-group"><label>Contraseña</label><input type="password" name="password" required></div>
-        <div class="form-group">
-            <label>Agencia</label>
-            <select name="agenciaId" required>
-                <option value="">Seleccione...</option>
+    <!-- Enlace a tu CSS de Administración -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="lista-body">
+
+<div class="admin-container" style="max-width: 640px; margin-top: 20px;">
+
+    <h1 style="text-align: center; margin-bottom: 20px;">Registrar Nuevo Empleado</h1>
+
+    <a th:href="@{/admin/dashboard}" style="display: block; text-align: center; margin-bottom: 20px; color: var(--muted); text-decoration: none; font-weight: 700;">← Volver al panel</a>
+
+    <hr style="margin-bottom: 20px; border-color: var(--border);">
+
+    <!-- Mensaje de Error -->
+    <p th:if="${param.error}" class="form-error-alert">El usuario ya existe.</p>
+
+    <form th:action="@{/admin/empleados/guardar}" method="post" style="box-shadow: none; padding: 0;">
+
+        <div>
+            <label for="dni">DNI:</label>
+            <input type="text" id="dni" name="dni" maxlength="8" placeholder="Ej. 12345678" required>
+        </div>
+
+        <div>
+            <label for="nombres">Nombres:</label>
+            <input type="text" id="nombres" name="nombres" placeholder="Nombres completos" required>
+        </div>
+
+        <div>
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" id="apellidos" name="apellidos" placeholder="Apellidos completos" required>
+        </div>
+
+        <div>
+            <label for="celular">Celular:</label>
+            <input type="text" id="celular" name="celular" placeholder="+51 999 999 999" required>
+        </div>
+
+        <div>
+            <label for="username">Usuario:</label>
+            <input type="text" id="username" name="username" placeholder="Nombre de usuario para login" required>
+        </div>
+
+        <div>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        <div>
+            <label for="agenciaId">Agencia:</label>
+            <select id="agenciaId" name="agenciaId" required>
+                <option value="">-- Seleccione una agencia --</option>
                 <option th:each="a : ${agencias}" th:value="${a.id}" th:text="${a.nombre}"></option>
             </select>
         </div>
-        <button type="submit" class="btn">Guardar Empleado</button>
+
+        <button type="submit" style="margin-top: 10px;">Guardar Empleado</button>
+
+        <a th:href="@{/admin/empleados}">Cancelar</a>
+
     </form>
 </div>
+
 </body>
 </html>

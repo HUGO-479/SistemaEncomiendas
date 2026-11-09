@@ -2,32 +2,60 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Empleados</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #EEF6FF; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 16px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
-    </style>
-</head>
-<body>
-<div class="container">
-    <h1>Gestión de Empleados</h1>
-    <a th:href="@{/admin/empleados/nuevo}">+ Nuevo Empleado</a>
-    <br><br>
-    <a th:href="@{/admin/dashboard}">Volver al panel</a>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Empleados - Atyra Express</title>
 
-    <table>
-        <thead><tr><th>DNI</th><th>Nombres</th><th>Usuario</th><th>Agencia</th></tr></thead>
-        <tbody>
-        <tr th:each="emp : ${empleados}">
-            <td th:text="${emp.persona.numeroDocumento}"></td>
-            <td th:text="${emp.persona.nombres + ' ' + emp.persona.apellidos}"></td>
-            <td th:text="${emp.username}"></td>
-            <td th:text="${emp.agencia != null ? emp.agencia.nombre : 'Sin Agencia'}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Enlace al CSS de Administración -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="lista-body">
+
+<div class="agencias-container">
+
+    <!-- Encabezado -->
+    <div class="agencias-header">
+        <div class="agencias-logo">
+            <div class="agencias-logo-icon">👥</div>
+            <span>Atyra <span style="color: var(--accent-dk);">Express</span></span>
+        </div>
+        <h1>Gestión de Empleados</h1>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="agencias-nav">
+        <a th:href="@{/admin/dashboard}">← Volver al panel</a>
+        <a th:href="@{/admin/empleados/nuevo}">+ Nuevo Empleado</a>
+    </nav>
+
+    <!-- Tabla -->
+    <div class="agencias-table-responsive">
+        <table class="agencias-table">
+            <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Nombres</th>
+                <th>Usuario</th>
+                <th>Agencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Mensaje si no hay empleados -->
+            <tr th:if="${#lists.isEmpty(empleados)}">
+                <td colspan="4" class="agencias-empty">No hay empleados registrados.</td>
+            </tr>
+
+            <!-- Filas de empleados -->
+            <tr th:each="emp : ${empleados}">
+                <td th:text="${emp.persona.numeroDocumento}"></td>
+                <td th:text="${emp.persona.nombres + ' ' + emp.persona.apellidos}" style="font-weight: 700; color: var(--primary);"></td>
+                <td th:text="${emp.username}"></td>
+                <td th:text="${emp.agencia != null ? emp.agencia.nombre : 'Sin Agencia'}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
+
 </body>
 </html>

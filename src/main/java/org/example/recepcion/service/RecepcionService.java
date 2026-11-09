@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class RecepcionService {
     }
 
     // ==========================================
-    // FLUJO 1: BUSCAR PRE-REGISTRO WEB POR DNI
+    // FLUJO 1: BUSCAR PRE-REGISTRO WEB
     // ==========================================
     public List<Envio> buscarPendientes(String busqueda) {
         return envioRepository.buscarPorGuiaODocumento(busqueda)
@@ -84,7 +85,7 @@ public class RecepcionService {
         Agencia agenciaDestino = agenciaRepository.findById(agenciaDestinoId)
                 .orElseThrow(() -> new RuntimeException("Agencia destino no encontrada"));
 
-        // 4. Crear Admisión (Medidas provisionales)
+        // 4. Crear Admisión (Valores provisionales, se corrigen al pesar)
         Admision admision = new Admision();
         admision.setRemitente(remitente);
         admision.setContenidoDeclarado(descripcionBulto);
@@ -103,22 +104,30 @@ public class RecepcionService {
         envio.setDestinatario(destinatario);
         envio.setAgenciaOrigen(agenciaOrigen);
         envio.setAgenciaDestino(agenciaDestino);
-        envio.setImporteCotizado(BigDecimal.ZERO);
+        envio.setImporteCotizado(BigDecimal.ZERO); // Se calcula al pesar
         envio.setEstado(EstadoEnvio.REGISTRADO);
 
         return envioRepository.save(envio);
     }
 
     // ==========================================
-    // FLUJO 3: CONFIRMAR RECEPCIÓN (PESAJE)
+    // FLUJO 3: CONFIRMAR RECEPCIÓN Y CALCULAR PRECIO
     // ==========================================
     @Transactional
     public void confirmarRecepcion(Long envioId, Double pesoReal, Double largo, Double ancho, Double alto) {
-        // 1. Buscamos el envío
+
+        // 1. Validar que los datos sean mayores a cero (Corrección del documento)
+        if (pesoReal == null || pesoReal <= 0 || largo == null || largo <= 0 || ancho == null || ancho <= 0 || alto == null || alto <= 0) {
+            throw new RuntimeException("El peso y las medidas deben ser mayores a cero.");
+        }
+
         Envio envio = envioRepository.findById(envioId)
                 .orElseThrow(() -> new RuntimeException("Envío no encontrado"));
 
-        // 2. Actualizamos la Admisión con las medidas reales
+        // 2. Calcular el precio ANTES de modificar la admisión (Corrección del documento)
+        BigDecimal precioCalculado = calcularPrecio(pesoReal, largo, ancho, alto);
+
+        // 3. Actualizamos la Admisión
         Admision admision = envio.getAdmision();
         admision.setPesoKg(BigDecimal.valueOf(pesoReal));
         admision.setLargoCm(BigDecimal.valueOf(largo));
@@ -126,10 +135,39 @@ public class RecepcionService {
         admision.setAltoCm(BigDecimal.valueOf(alto));
         admision.setDecision(DecisionAdmision.ACEPTADA);
 
-        // 3. Cambiamos el estado del envío
-        envio.setEstado(EstadoEnvio.EN_TRANSITO);
+        // 4. Actualizamos el Envío
+        envio.setImporteCotizado(precioCalculado);
+        envio.setEstado(EstadoEnvio.EN_AGENCIA);
 
-        // 4. Guardamos
+        // 5. Guardamos
         envioRepository.save(envio);
+    }
+
+    // ==========================================
+    // LÓGICA DE CÁLCULO (Opción A - Corrección de umbrales)
+    // ==========================================
+    private BigDecimal calcularPrecio(Double pesoReal, Double largo, Double ancho, Double alto) {
+        // 1. Calcular peso volumétrico
+        double volumen = largo * ancho * alto;
+        double pesoVolumetrico = volumen / 5000.0;
+
+        // 2. Peso Facturable (El mayor) redondeado a 2 decimales
+        double pesoFacturable = Math.max(pesoReal, pesoVolumetrico);
+        BigDecimal pesoFacturableBD = BigDecimal.valueOf(pesoFacturable).setScale(2, RoundingMode.HALF_UP);
+
+        // 3. Asignar categoría y precio según la tabla corregida (Opción A)
+        // Usamos compareTo para manejar correctamente los límites exactos (2, 5, 10, 20)
+        if (pesoFacturableBD.compareTo(new BigDecimal("2.00")) <= 0) {
+            return new BigDecimal("12.00"); // Pequeño
+        } else if (pesoFacturableBD.compareTo(new BigDecimal("5.00")) <= 0) {
+            return new BigDecimal("18.00"); // Mediano
+        } else if (pesoFacturableBD.compareTo(new BigDecimal("10.00")) <= 0) {
+            return new BigDecimal("25.00"); // Grande
+        } else if (pesoFacturableBD.compareTo(new BigDecimal("20.00")) <= 0) {
+            return new BigDecimal("50.00"); // Industrial
+        } else {
+            // Si supera los 20 kg, se rechaza o se cotiza aparte (según el documento)
+            throw new RuntimeException("El paquete supera los 20 kg. Debe cotizarse como carga especial en ventanilla.");
+        }
     }
 }

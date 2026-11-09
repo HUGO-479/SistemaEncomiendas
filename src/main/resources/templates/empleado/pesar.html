@@ -19,33 +19,52 @@
     <p style="color:#6B86A8; margin:0 0 24px 0; font-size:14px;">Ingresa el peso real y las dimensiones del paquete para calcular el peso volumétrico.</p>
 
     <form th:action="@{/recepcion/pesar/{id}(id=${envioId})}" method="post" style="display:flex; gap:20px; flex-wrap:wrap;">
+
+        <!-- COLUMNA IZQUIERDA: INPUTS -->
         <div style="flex:1; min-width:280px;">
             <div style="margin-bottom:16px;">
                 <label style="font-size:13px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Peso Real (kg)</label>
-                <input type="number" step="0.1" name="peso" placeholder="0.00" required style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
+                <input type="number" step="0.1" name="peso" id="peso" placeholder="0.00" required oninput="calcularResumen()" style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
             </div>
             <div style="display:flex; gap:12px;">
                 <div style="flex:1;">
                     <label style="font-size:13px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Largo (cm)</label>
-                    <input type="number" step="0.1" name="largo" value="1" required style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
+                    <input type="number" step="0.1" name="largo" id="largo" value="1" required oninput="calcularResumen()" style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
                 </div>
                 <div style="flex:1;">
                     <label style="font-size:13px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Ancho (cm)</label>
-                    <input type="number" step="0.1" name="ancho" value="1" required style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
+                    <input type="number" step="0.1" name="ancho" id="ancho" value="1" required oninput="calcularResumen()" style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
                 </div>
             </div>
             <div style="margin-top:16px;">
                 <label style="font-size:13px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Alto (cm)</label>
-                <input type="number" step="0.1" name="alto" value="1" required style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
+                <input type="number" step="0.1" name="alto" id="alto" value="1" required oninput="calcularResumen()" style="width:100%; padding:12px 14px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; box-sizing:border-box; outline:none; background:#F6F9FF;">
             </div>
         </div>
 
+        <!-- COLUMNA DERECHA: RESUMEN DINÁMICO -->
         <div style="flex:1; min-width:260px; background:#F6F9FF; border:1px solid #D6E4F5; border-radius:16px; padding:20px;">
-            <h3 style="color:#1E3A5F; margin:0 0 10px 0; font-size:16px;">Peso Volumétrico ℹ️</h3>
-            <p style="font-size:12px; color:#6B86A8; margin:0 0 4px 0;">Fórmula:</p>
-            <p style="font-size:13px; color:#1E3A5F; font-weight:700; margin:0 0 14px 0;">Volumen = (Largo × Ancho × Alto) / 5000</p>
-            <p style="font-size:12px; color:#6B86A8; margin:0;">Se usará el mayor valor entre Peso Real y Peso Volumétrico para el cobro.</p>
-            <button type="submit" style="width:100%; margin-top:18px; padding:14px; background:#1E3A5F; color:white; border:none; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer;">✓ Confirmar Recepción</button>
+            <h3 style="color:#1E3A5F; margin:0 0 10px 0; font-size:16px;">Resumen del Cálculo ℹ️</h3>
+
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="font-size:12px; color:#6B86A8;">Peso Volumétrico:</span>
+                <span id="lblVolumetrico" style="font-size:13px; font-weight:700; color:#1E3A5F;">0.00 kg</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="font-size:12px; color:#6B86A8;">Peso Facturable:</span>
+                <span id="lblFacturable" style="font-size:13px; font-weight:700; color:#1E3A5F;">0.00 kg</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="font-size:12px; color:#6B86A8;">Categoría:</span>
+                <span id="lblCategoria" style="font-size:13px; font-weight:700; color:#FFA13A;">Pequeño</span>
+            </div>
+            <hr style="border:0; border-top:1px solid #D6E4F5; margin:10px 0;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span style="font-size:14px; font-weight:800; color:#1E3A5F;">TOTAL A COBRAR:</span>
+                <span id="lblTotal" style="font-size:16px; font-weight:800; color:#28a745;">S/ 0.00</span>
+            </div>
+
+            <button type="submit" style="width:100%; padding:14px; background:#1E3A5F; color:white; border:none; border-radius:999px; font-weight:700; font-size:14px; cursor:pointer;">✓ Confirmar Recepción</button>
         </div>
     </form>
 
@@ -55,6 +74,47 @@
         </form>
     </div>
 </div>
+
+<script>
+    function calcularResumen() {
+        // 1. Obtener valores
+        const peso = parseFloat(document.getElementById('peso').value) || 0;
+        const largo = parseFloat(document.getElementById('largo').value) || 0;
+        const ancho = parseFloat(document.getElementById('ancho').value) || 0;
+        const alto = parseFloat(document.getElementById('alto').value) || 0;
+
+        // 2. Calcular Volumétrico y Facturable
+        const volumetrico = (largo * ancho * alto) / 5000;
+        const facturable = Math.max(peso, volumetrico);
+
+        // 3. Determinar Categoría y Precios
+        let categoria = "Pequeño";
+        let base = 12.00;
+        let incluye = 2.00;
+        let extra = 1.50;
+
+        if (facturable > 20) {
+            categoria = "Industrial"; base = 50.00; incluye = 20.00; extra = 4.50;
+        } else if (facturable > 10) {
+            categoria = "Grande"; base = 25.00; incluye = 10.00; extra = 3.50;
+        } else if (facturable > 5) {
+            categoria = "Mediano"; base = 18.00; incluye = 5.00; extra = 2.50;
+        }
+
+        // 4. Calcular Total
+        const pesoExtra = Math.max(0, facturable - incluye);
+        const total = base + (pesoExtra * extra);
+
+        // 5. Mostrar en pantalla
+        document.getElementById('lblVolumetrico').innerText = volumetrico.toFixed(2) + " kg";
+        document.getElementById('lblFacturable').innerText = facturable.toFixed(2) + " kg";
+        document.getElementById('lblCategoria').innerText = categoria;
+        document.getElementById('lblTotal').innerText = "S/ " + total.toFixed(2);
+    }
+
+    // Ejecutar al cargar por si hay valores por defecto
+    document.addEventListener("DOMContentLoaded", calcularResumen);
+</script>
 
 </body>
 </html>
