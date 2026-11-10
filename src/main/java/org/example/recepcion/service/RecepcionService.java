@@ -37,10 +37,13 @@ public class RecepcionService {
     // ==========================================
     // FLUJO 1: BUSCAR PRE-REGISTRO WEB
     // ==========================================
-    public List<Envio> buscarPendientes(String busqueda) {
+    // MODIFICADO: Ahora recibe la agencia del empleado para filtrar
+    public List<Envio> buscarPendientes(String busqueda, Agencia agenciaEmpleado) {
         return envioRepository.buscarPorGuiaODocumento(busqueda)
                 .stream()
                 .filter(e -> e.getEstado() == EstadoEnvio.REGISTRADO)
+                // FILTRO: Excluimos los envíos cuyo destino sea la misma agencia del empleado
+                .filter(e -> !e.getAgenciaDestino().getId().equals(agenciaEmpleado.getId()))
                 .toList();
     }
 
@@ -53,7 +56,7 @@ public class RecepcionService {
             String remitenteNombres, String remitenteApellidos, String remitenteRazonSocial, String remitenteCelular,
             TipoDocumento destinatarioTipoDoc, String destinatarioDni,
             String destinatarioNombres, String destinatarioApellidos, String destinatarioRazonSocial, String destinatarioCelular,
-            Long agenciaDestinoId, String descripcionBulto, Agencia agenciaOrigen) {
+            Long agenciaDestinoId, Long tipoPaqueteId, String descripcionBulto, Agencia agenciaOrigen) {
 
         // 1. Buscar o crear Remitente
         Persona remitente = clienteRepository.findByTipoDocumentoAndNumeroDocumento(remitenteTipoDoc, remitenteDni)
@@ -84,6 +87,11 @@ public class RecepcionService {
         // 3. Obtener Agencia Destino
         Agencia agenciaDestino = agenciaRepository.findById(agenciaDestinoId)
                 .orElseThrow(() -> new RuntimeException("Agencia destino no encontrada"));
+
+        // VALIDACIÓN DE SEGURIDAD
+        if (agenciaOrigen.getId().equals(agenciaDestino.getId())) {
+            throw new RuntimeException("Error: No puedes registrar un envío a la misma agencia donde te encuentras.");
+        }
 
         // 4. Crear Admisión (Valores provisionales, se corrigen al pesar)
         Admision admision = new Admision();
@@ -116,7 +124,6 @@ public class RecepcionService {
     @Transactional
     public void confirmarRecepcion(Long envioId, Double pesoReal, Double largo, Double ancho, Double alto) {
 
-        // 1. Validar que los datos sean mayores a cero (Corrección del documento)
         if (pesoReal == null || pesoReal <= 0 || largo == null || largo <= 0 || ancho == null || ancho <= 0 || alto == null || alto <= 0) {
             throw new RuntimeException("El peso y las medidas deben ser mayores a cero.");
         }
@@ -124,10 +131,8 @@ public class RecepcionService {
         Envio envio = envioRepository.findById(envioId)
                 .orElseThrow(() -> new RuntimeException("Envío no encontrado"));
 
-        // 2. Calcular el precio ANTES de modificar la admisión (Corrección del documento)
         BigDecimal precioCalculado = calcularPrecio(pesoReal, largo, ancho, alto);
 
-        // 3. Actualizamos la Admisión
         Admision admision = envio.getAdmision();
         admision.setPesoKg(BigDecimal.valueOf(pesoReal));
         admision.setLargoCm(BigDecimal.valueOf(largo));
@@ -135,39 +140,50 @@ public class RecepcionService {
         admision.setAltoCm(BigDecimal.valueOf(alto));
         admision.setDecision(DecisionAdmision.ACEPTADA);
 
-        // 4. Actualizamos el Envío
         envio.setImporteCotizado(precioCalculado);
         envio.setEstado(EstadoEnvio.EN_AGENCIA);
 
-        // 5. Guardamos
         envioRepository.save(envio);
     }
 
     // ==========================================
-    // LÓGICA DE CÁLCULO (Opción A - Corrección de umbrales)
+    // LÓGICA DE CÁLCULO
     // ==========================================
+    // Reemplaza tu método calcularPrecio actual por este:
     private BigDecimal calcularPrecio(Double pesoReal, Double largo, Double ancho, Double alto) {
         // 1. Calcular peso volumétrico
         double volumen = largo * ancho * alto;
         double pesoVolumetrico = volumen / 5000.0;
 
-        // 2. Peso Facturable (El mayor) redondeado a 2 decimales
+        // 2. Obtener el Peso Facturable (El mayor)
         double pesoFacturable = Math.max(pesoReal, pesoVolumetrico);
-        BigDecimal pesoFacturableBD = BigDecimal.valueOf(pesoFacturable).setScale(2, RoundingMode.HALF_UP);
 
-        // 3. Asignar categoría y precio según la tabla corregida (Opción A)
-        // Usamos compareTo para manejar correctamente los límites exactos (2, 5, 10, 20)
-        if (pesoFacturableBD.compareTo(new BigDecimal("2.00")) <= 0) {
-            return new BigDecimal("12.00"); // Pequeño
-        } else if (pesoFacturableBD.compareTo(new BigDecimal("5.00")) <= 0) {
-            return new BigDecimal("18.00"); // Mediano
-        } else if (pesoFacturableBD.compareTo(new BigDecimal("10.00")) <= 0) {
-            return new BigDecimal("25.00"); // Grande
-        } else if (pesoFacturableBD.compareTo(new BigDecimal("20.00")) <= 0) {
-            return new BigDecimal("50.00"); // Industrial
-        } else {
-            // Si supera los 20 kg, se rechaza o se cotiza aparte (según el documento)
+        // 3. Redondear HACIA ARRIBA al kilo completo (Ej: 2.1 -> 3)
+        BigDecimal kilosFacturables = BigDecimal.valueOf(pesoFacturable).setScale(0, RoundingMode.CEILING);
+
+        // 4. Validar el límite de 20 kg
+        if (kilosFacturables.compareTo(new BigDecimal("20")) > 0) {
             throw new RuntimeException("El paquete supera los 20 kg. Debe cotizarse como carga especial en ventanilla.");
         }
+
+        // 5. Aplicar la fórmula: Base 12.00 + (Kilos extra * 1.50)
+        BigDecimal tarifaBase = new BigDecimal("12.00");
+
+        if (kilosFacturables.compareTo(new BigDecimal("2")) <= 0) {
+            return tarifaBase; // 1 o 2 kg
+        } else {
+            BigDecimal kilosExtra = kilosFacturables.subtract(new BigDecimal("2"));
+            BigDecimal costoExtra = kilosExtra.multiply(new BigDecimal("1.50"));
+            return tarifaBase.add(costoExtra);
+        }
     }
-}
+
+    // Método público para que puedas usarlo en el controlador o en la vista si lo necesitas
+    public String obtenerCategoria(BigDecimal pesoFacturableBD) {
+        int peso = pesoFacturableBD.intValue();
+        if (peso <= 2) return "Pequeño";
+        if (peso <= 5) return "Mediano";
+        if (peso <= 10) return "Grande";
+        return "Industrial";
+        }
+    }

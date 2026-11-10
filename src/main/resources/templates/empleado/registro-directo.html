@@ -87,6 +87,10 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                 <div>
                     <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Agencia Destino</label>
+                    <!-- TEXTO INFORMATIVO AGREGADO -->
+                    <div style="font-size:11px; color:#6B86A8; margin-bottom:4px;" th:if="${agenciaOrigen != null}">
+                        Enviando desde: <strong th:text="${agenciaOrigen.nombre}">Agencia</strong>
+                    </div>
                     <select name="agenciaDestinoId" required style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; background:white; outline:none;">
                         <option value="">-- Seleccione --</option>
                         <option th:each="a : ${agencias}" th:value="${a.id}" th:text="${a.nombre}"></option>
@@ -94,7 +98,7 @@
                 </div>
                 <div>
                     <label style="font-size:12px; font-weight:700; color:#1E3A5F; display:block; margin-bottom:6px;">Tipo de Paquete</label>
-                    <select name="tipoPaqueteId" required style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; background:white; outline:none;">
+                    <select name="tipoPaqueteId" required style="width:100%; padding:11px 12px; border:1px solid #D6E4F5; border-radius:12px; font-size:14px; background:white; outline:none; margin-top: 18px;">
                         <option value="">-- Seleccione --</option>
                         <option th:each="tp : ${tiposPaquete}" th:value="${tp.id}" th:text="${tp.nombre}"></option>
                     </select>

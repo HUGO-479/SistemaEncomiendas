@@ -44,11 +44,17 @@ public class RecepcionController {
     }
 
     @PostMapping("/buscar")
-    public String buscar(@RequestParam("busqueda") String busqueda, Model model) {
+    public String buscar(@RequestParam("busqueda") String busqueda, Model model, Authentication auth) {
         try {
-            List<Envio> envios = recepcionService.buscarPendientes(busqueda);
+            // 1. Obtener la agencia del empleado logueado
+            Usuario empleado = usuarioRepository.findByUsername(auth.getName()).orElseThrow();
+            Agencia agenciaEmpleado = empleado.getAgencia();
+
+            // 2. Pasarle la agencia al servicio para filtrar
+            List<Envio> envios = recepcionService.buscarPendientes(busqueda, agenciaEmpleado);
+
             if (envios.isEmpty()) {
-                model.addAttribute("error", "No se encontraron envíos pendientes con ese dato.");
+                model.addAttribute("error", "No se encontraron envíos pendientes con ese dato (o el paquete ya se encuentra en su agencia).");
             } else {
                 model.addAttribute("envios", envios);
             }
@@ -63,9 +69,22 @@ public class RecepcionController {
     // FLUJO 2: REGISTRO DIRECTO
     // ==========================================
     @GetMapping("/registro-directo")
-    public String mostrarRegistroDirecto(Model model) {
-        model.addAttribute("agencias", agenciaRepository.findAll());
+    public String mostrarRegistroDirecto(Model model, Authentication auth) {
+        Usuario empleado = usuarioRepository.findByUsername(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        Agencia agenciaOrigen = empleado.getAgencia();
+
+        if (agenciaOrigen == null) {
+            throw new RuntimeException("El empleado no tiene una agencia asignada.");
+        }
+
+        List<Agencia> agenciasDisponibles = agenciaRepository.findByIdNot(agenciaOrigen.getId());
+
+        model.addAttribute("agencias", agenciasDisponibles);
         model.addAttribute("tiposPaquete", tipoPaqueteRepository.findAll());
+        model.addAttribute("agenciaOrigen", agenciaOrigen);
+
         return "empleado/registro-directo";
     }
 
@@ -84,6 +103,7 @@ public class RecepcionController {
             @RequestParam("destinatarioRazonSocial") String destinatarioRazonSocial,
             @RequestParam("destinatarioCelular") String destinatarioCelular,
             @RequestParam("agenciaDestinoId") Long agenciaDestinoId,
+            @RequestParam("tipoPaqueteId") Long tipoPaqueteId,
             @RequestParam("descripcionBulto") String descripcionBulto,
             Authentication auth) {
 
@@ -93,7 +113,7 @@ public class RecepcionController {
         Envio envio = recepcionService.registrarDirectoEnAgencia(
                 remitenteTipoDoc, remitenteDni, remitenteNombres, remitenteApellidos, remitenteRazonSocial, remitenteCelular,
                 destinatarioTipoDoc, destinatarioDni, destinatarioNombres, destinatarioApellidos, destinatarioRazonSocial, destinatarioCelular,
-                agenciaDestinoId, descripcionBulto, agenciaOrigen
+                agenciaDestinoId, tipoPaqueteId, descripcionBulto, agenciaOrigen
         );
 
         return "redirect:/recepcion/pesar/" + envio.getId();
@@ -116,19 +136,16 @@ public class RecepcionController {
                         @RequestParam("alto") Double alto,
                         RedirectAttributes redirect) {
 
-        // 1. Confirmar la recepción y calcular precio
         recepcionService.confirmarRecepcion(id, peso, largo, ancho, alto);
 
-        // 2. Enviar mensaje de éxito y ID
-        redirect.addFlashAttribute("mensajeExito", "Recepción exitosa. El paquete ya está en tránsito.");
+        redirect.addFlashAttribute("mensajeExito", "Recepción exitosa. El paquete ya está en agencia.");
         redirect.addFlashAttribute("envioId", id);
 
-        // 3. Redirigir a la vista de éxito
         return "redirect:/recepcion/exito";
     }
 
     // ==========================================
-    // FLUJO 4: PANTALLA DE ÉXITO (Ticket y Guía)
+    // FLUJO 4: PANTALLA DE ÉXITO
     // ==========================================
     @GetMapping("/exito")
     public String mostrarExito() {
